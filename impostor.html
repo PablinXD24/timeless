@@ -137,7 +137,7 @@
             background: #ff2a75;
             border-color: #000000;
             box-shadow: 4px 4px 0px #000000;
-            font-size: clamp(1.1rem, 4.5vw, 1.5rem);
+            font-size: clamp(1rem, 4vw, 1.3rem);
             line-height: 1.4;
         }
 
@@ -173,13 +173,44 @@
             text-align: left;
         }
 
-        /* --- BOTÕES LÍQUIDOS ESTILO HUB --- */
-        .panel-controls {
+        /* --- PAINÉIS / CARDS ESTILO HUB --- */
+        .glass-card {
             width: 100%;
-            display: flex; flex-direction: column; gap: 12px;
-            z-index: 10;
+            max-width: 440px;
+            background: #ffffff;
+            border: 4px solid #000000;
+            border-radius: 0px;
+            padding: 20px;
+            box-shadow: 6px 6px 0px #000000;
+            text-align: center;
+            color: #000000;
         }
 
+        .card-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.2rem, 5vw, 1.5rem);
+            font-weight: 800;
+            color: #000000;
+            margin-bottom: 14px;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+            word-break: break-word;
+        }
+
+        .desc-text {
+            font-family: var(--font-data);
+            font-size: clamp(0.9rem, 3.5vw, 1rem);
+            color: #000;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            text-align: center;
+            width: 100%;
+            word-break: break-word;
+        }
+
+        /* --- BOTÕES LÍQUIDOS ESTILO HUB --- */
         .btn {
             background: #ffd600; 
             color: #000000; 
@@ -317,8 +348,8 @@
 </div>
 
 <div class="container">
-    <!-- PAINEL 1: LOBBY / AGUARDANDO (Mantido para lógica de conexão) -->
-    <div class="glass-card" id="lobby-panel" style="display: none;">
+    <!-- PAINEL 1: LOBBY / AGUARDANDO -->
+    <div class="glass-card" id="lobby-panel">
         <div class="card-title"><i class="fa-solid fa-users"></i> Jogadores na Sala</div>
         <div class="players-list" id="lobby-players-list">
             <div style="color: #666; font-size: 0.95rem; font-weight: 700;">Carregando participantes...</div>
@@ -334,7 +365,7 @@
     </div>
 
     <!-- PAINEL 2: FASE DE REVELAÇÃO DA PALAVRA / DISCUSSÃO -->
-    <div id="game-panel" style="width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+    <div id="game-panel" style="display: none; width: 100%; flex-direction: column; align-items: center; justify-content: center;">
         
         <!-- CARTA COM FLIP (ESTÉTICA SKETCH) -->
         <div class="flip-card-container" id="flip-card" onclick="toggleCardFlip()">
@@ -352,9 +383,6 @@
             </div>
         </div>
 
-        <div class="desc-text" id="phase-instructions" style="display: none;">
-            Memorize sua palavra. Discutam verbalmente entre vocês e deem dicas sutis sem revelar demais!
-        </div>
         <div id="host-voting-action" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; z-index: 100;">
             <button class="btn btn-green" onclick="goToVotingPhase()">
                 <i class="fa-solid fa-gavel"></i> ABRIR VOTAÇÃO
@@ -363,9 +391,9 @@
     </div>
 
     <!-- PAINEL 3: FASE DE VOTAÇÃO -->
-    <div class="glass-card" id="voting-panel" style="display: none; max-width: 440px; width: 100%;">
+    <div class="glass-card" id="voting-panel" style="display: none;">
         <div class="card-title"><i class="fa-solid fa-vote-yea"></i> Hora de Votar no Impostor!</div>
-        <div class="desc-text" style="color: #000; margin-bottom: 12px;">Quem você acha que é o impostor que não sabia a palavra?</div>
+        <div class="desc-text" style="margin-bottom: 12px;">Quem você acha que é o impostor que não sabia a palavra?</div>
         <div class="players-list" id="voting-players-list">
             <!-- Gerado via JS -->
         </div>
@@ -436,17 +464,26 @@
             const data = snap.val();
             if(data.host === myId) {
                 isHost = true;
+                document.getElementById('host-start-container').style.display = 'block';
+                document.getElementById('guest-waiting-container').style.display = 'none';
             }
         }
     });
 
     // Ouvir lista de jogadores no lobby
     onValue(ref(db, `rooms/${roomCode}/players`), (snap) => {
+        const listEl = document.getElementById('lobby-players-list');
+        listEl.innerHTML = '';
         if(snap.exists()) {
             const players = snap.val();
             Object.keys(players).forEach(pId => {
                 const p = players[pId];
                 if(pId === myId) myName = p.name || "Você";
+                
+                const div = document.createElement('div');
+                div.className = 'player-row';
+                div.innerHTML = `<span><i class="fa-solid fa-user" style="color:#000; margin-right:8px;"></i> ${p.name || 'Anônimo'} ${pId === myId ? '(Você)' : ''}</span>`;
+                listEl.appendChild(div);
             });
         }
     });
@@ -454,6 +491,8 @@
     get(roomRef).then(s => {
         if(s.exists() && s.val().host === myId) {
             isHost = true;
+            document.getElementById('host-start-container').style.display = 'block';
+            document.getElementById('guest-waiting-container').style.display = 'none';
         }
     });
 
@@ -533,11 +572,11 @@
 
                 if(myAssignment.role === 'impostor') {
                     wordBox.className = "secret-word-box impostor-alert";
-                    wordBox.innerHTML = `VOCÊ É O IMPOSTOR!<br><span style="font-size: 0.9rem; display:block; margin-top:10px; font-weight:normal; color:#fff;">Dica: ${myAssignment.hint}</span>`;
+                    wordBox.innerHTML = `VOCÊ É O IMPOSTOR!<br><span style="font-size: 0.85rem; display:block; margin-top:8px; font-weight:normal; color:#fff;">Dica: ${myAssignment.hint}</span>`;
                     backSubtitle.innerText = "Seu Papel";
                 } else {
                     wordBox.className = "secret-word-box";
-                    wordBox.innerHTML = `${myAssignment.word}<br><span style="font-size: 0.85rem; display:block; margin-top:8px; font-weight:normal; color:#555;">Dica geral: ${myAssignment.hint}</span>`;
+                    wordBox.innerHTML = `${myAssignment.word}<br><span style="font-size: 0.8rem; display:block; margin-top:6px; font-weight:normal; color:#555;">Dica: ${myAssignment.hint}</span>`;
                     backSubtitle.innerText = "Palavra Secreta";
                 }
 
@@ -651,4 +690,3 @@
 </script>
 </body>
 </html>
-```[cite: 1]
