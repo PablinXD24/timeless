@@ -13,7 +13,7 @@
             --font-display: 'Syne', sans-serif;
             --font-data: 'Space Grotesk', sans-serif;
             --font-mono: 'VT323', monospace;
-            --card-radius: 0px;
+            --card-radius: 20px;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -93,13 +93,14 @@
             height: 100%;
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
-            border-radius: 0px;
+            border-radius: var(--card-radius);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             padding: 30px;
             border: 4px solid #000000;
             box-shadow: 8px 8px 0px #000000;
+            overflow: hidden;
         }
 
         .flip-card-front {
@@ -123,7 +124,7 @@
             color: #000000;
             background: #ffffff;
             padding: 20px;
-            border-radius: 0px;
+            border-radius: 12px;
             border: 3px solid #000000;
             box-shadow: 4px 4px 0px #000000;
             margin: auto 0;
@@ -635,6 +636,12 @@
 
                 let mostVotedId = null;
                 let maxVotes = -1;
+                Object.keys(voteCounts).label(id => {
+                    if(voteCounts[id] > maxVotes) {
+                        maxVotes = voteCounts[id];
+                        mostVotedId = id;
+                    }
+                });
                 Object.keys(voteCounts).forEach(id => {
                     if(voteCounts[id] > maxVotes) {
                         maxVotes = voteCounts[id];
