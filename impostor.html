@@ -13,7 +13,6 @@
             --font-display: 'Syne', sans-serif;
             --font-data: 'Space Grotesk', sans-serif;
             --font-mono: 'VT323', monospace;
-            --island-bezier: cubic-bezier(0.25, 1, 0.5, 1);
             --card-radius: 0px;
         }
 
@@ -28,8 +27,9 @@
             font-family: var(--font-data);
             display: flex; flex-direction: column;
             align-items: center;
+            justify-content: flex-start;
             overflow-x: hidden;
-            padding: env(safe-area-inset-top, 15px) 15px env(safe-area-inset-bottom, 15px) 15px;
+            padding: 30px 20px;
             position: relative;
             transition: transform 0.6s cubic-bezier(0.7, 0, 0.3, 1), opacity 0.4s ease;
         }
@@ -52,23 +52,23 @@
         .container {
             position: relative;
             width: 100%;
-            max-width: 480px;
+            max-width: 520px; /* Otimizado para melhor proporção em telas de PC */
             z-index: 10;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-bottom: 40px;
+            padding-bottom: 50px;
             margin: 0 auto;
         }
 
         h1 { 
             font-family: var(--font-display);
-            font-size: clamp(2.2rem, 9vw, 4rem); 
+            font-size: clamp(3rem, 7vw, 4.5rem); 
             font-weight: 800; 
             line-height: 0.85; 
             letter-spacing: -2px; 
             text-transform: uppercase; 
-            margin-bottom: 8px; 
+            margin-bottom: 12px; 
             text-align: center;
             color: #fff;
             width: 100%;
@@ -78,14 +78,14 @@
         
         .subtitle { 
             font-family: var(--font-mono);
-            font-size: clamp(1rem, 4vw, 1.2rem); 
+            font-size: 1.25rem; 
             color: #000;
             background: #00ff66;
-            padding: 6px 16px; 
+            padding: 6px 18px; 
             border: 3px solid #000000;
             box-shadow: 4px 4px 0px #000000;
             letter-spacing: 1.5px; 
-            margin-bottom: 20px; 
+            margin-bottom: 25px; 
             font-weight: 700;
             text-transform: uppercase;
             text-align: center;
@@ -93,16 +93,16 @@
 
         /* --- CÁPSULA / ESFERA DE STATUS --- */
         .impostor-sphere-wrapper {
-            width: 100px; height: 100px;
+            width: 110px; height: 110px;
             background: #ffd600;
             border: 4px solid #000000;
             display: flex; justify-content: center; align-items: center;
-            margin-bottom: 20px; position: relative;
+            margin-bottom: 25px; position: relative;
             box-shadow: 6px 6px 0px #000000;
         }
 
         .icon-sphere {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             color: #000000;
         }
 
@@ -112,19 +112,19 @@
             background: #ffffff;
             border: 4px solid #000000;
             border-radius: 0px;
-            padding: 18px;
-            margin-bottom: 20px;
-            box-shadow: 6px 6px 0px #000000;
+            padding: 26px;
+            margin-bottom: 25px;
+            box-shadow: 8px 8px 0px #000000;
             text-align: center;
             color: #000000;
         }
 
         .card-title {
             font-family: var(--font-display);
-            font-size: clamp(1.2rem, 5vw, 1.4rem);
+            font-size: 1.5rem;
             font-weight: 800;
             color: #000000;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
             text-transform: uppercase;
             letter-spacing: -0.5px;
         }
@@ -133,9 +133,9 @@
         .flip-card-container {
             perspective: 1000px;
             width: 100%;
-            max-width: 250px;
-            height: 320px;
-            margin: 0 auto 15px auto;
+            max-width: 280px;
+            height: 360px;
+            margin: 0 auto 20px auto;
             cursor: pointer;
         }
 
@@ -162,7 +162,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 20px;
+            padding: 24px;
             border: 4px solid #000000;
             box-shadow: 6px 6px 0px #000000;
         }
@@ -178,15 +178,15 @@
             transform: rotateY(180deg);
         }
 
-        .card-brand { font-family: var(--font-mono); font-size: 0.95rem; font-weight: 700; align-self: flex-end; margin-top: auto; color: inherit; text-transform: uppercase; }
+        .card-brand { font-family: var(--font-mono); font-size: 1rem; font-weight: 700; align-self: flex-end; margin-top: auto; color: inherit; text-transform: uppercase; }
         
         .secret-word-box {
             font-family: var(--font-data);
-            font-size: 1.3rem;
+            font-size: 1.35rem;
             font-weight: 700;
             color: #000000;
             background: #ffffff;
-            padding: 12px;
+            padding: 14px;
             border-radius: 0px;
             border: 3px solid #000000;
             box-shadow: 3px 3px 0px #000000;
@@ -200,48 +200,49 @@
             background: #ff2a75;
             border-color: #000000;
             box-shadow: 3px 3px 0px #000000;
-            font-size: 1rem;
+            font-size: 1.1rem;
+            line-height: 1.3;
         }
 
         .desc-text {
             font-family: var(--font-data);
-            font-size: 0.9rem;
+            font-size: 1rem;
             color: #fff;
             font-weight: 700;
-            line-height: 1.4;
-            margin-bottom: 15px;
+            line-height: 1.5;
+            margin-bottom: 20px;
             text-transform: uppercase;
             text-align: center;
             width: 100%;
-            padding: 0 5px;
+            padding: 0 10px;
         }
 
         /* --- LISTAS E JOGADORES --- */
         .players-list {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            max-height: 45vh;
+            gap: 12px;
+            max-height: 350px;
             overflow-y: auto;
-            padding-right: 4px;
-            margin-bottom: 15px;
+            padding-right: 6px;
+            margin-bottom: 20px;
             width: 100%;
         }
-        .players-list::-webkit-scrollbar { width: 5px; }
+        .players-list::-webkit-scrollbar { width: 6px; }
         .players-list::-webkit-scrollbar-thumb { background: #000000; }
 
         .player-row {
             background: #f0f0f0;
             border: 3px solid #000000;
-            padding: 12px 14px;
+            padding: 14px 18px;
             border-radius: 0px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 1rem;
             color: #000000;
-            box-shadow: 3px 3px 0px #000000;
+            box-shadow: 4px 4px 0px #000000;
             text-transform: uppercase;
             font-family: var(--font-data);
             word-break: break-word;
@@ -258,10 +259,10 @@
             background: #ffd600; 
             color: #000000; 
             border: 4px solid #000000; 
-            padding: 16px; 
+            padding: 18px; 
             border-radius: 0px; 
             font-weight: 800; 
-            font-size: 1rem; 
+            font-size: 1.15rem; 
             font-family: var(--font-display); 
             width: 100%; 
             cursor: pointer; 
@@ -294,10 +295,10 @@
             background: #ffffff;
             color: #000000; 
             border: 3px solid #000000;
-            padding: 14px; 
+            padding: 16px; 
             border-radius: 0px; 
             font-weight: 700; 
-            font-size: 0.95rem;
+            font-size: 1rem;
             width: 100%; 
             cursor: pointer; 
             transition: 0.2s; 
@@ -324,7 +325,7 @@
         /* --- MODAL DE FASE / OVERLAY DE RESULTADO --- */
         .overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            width: 100dvw; height: 100dvh;
+            width: 100dvw; height: 100dvw;
             background: rgba(0, 0, 0, 0.92); z-index: 1000;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
@@ -334,31 +335,31 @@
 
         .overlay-title {
             font-family: var(--font-display);
-            font-size: clamp(1.8rem, 7vw, 3rem); 
+            font-size: clamp(2.2rem, 5vw, 3.5rem); 
             font-weight: 800; 
             color: #ffd600;
             text-transform: uppercase; 
             letter-spacing: -1px; 
-            margin-bottom: 12px;
+            margin-bottom: 15px;
         }
 
         .overlay-desc {
             font-family: var(--font-data); 
-            font-size: clamp(0.95rem, 4vw, 1.1rem); 
+            font-size: 1.15rem; 
             color: #fff;
             background: #1e1e24;
             border: 4px solid #000;
-            padding: 18px;
+            padding: 24px;
             width: 100%;
-            max-width: 400px; 
-            margin-bottom: 20px; 
-            line-height: 1.5;
+            max-width: 440px; 
+            margin-bottom: 25px; 
+            line-height: 1.6;
             text-transform: uppercase;
             box-shadow: 6px 6px 0px #ff2a75;
         }
 
         .confetti {
-            position: absolute; width: 10px; height: 10px; opacity: 0.9;
+            position: absolute; width: 12px; height: 12px; opacity: 0.9;
             border: 2px solid #000;
             animation: fall linear infinite;
         }
@@ -378,7 +379,7 @@
 <div class="overlay" id="result-overlay">
     <div class="overlay-title" id="result-title">FIM DE JOGO</div>
     <div class="overlay-desc" id="result-desc">Carregando detalhes do resultado...</div>
-    <div style="width: 100%; max-width: 300px;">
+    <div style="width: 100%; max-width: 320px;">
         <button class="btn btn-blue" onclick="triggerPortalExit('index')">
             <i class="fa-solid fa-house"></i> Voltar pro Hub
         </button>
@@ -397,14 +398,14 @@
     <div class="glass-card" id="lobby-panel">
         <div class="card-title"><i class="fa-solid fa-users"></i> Jogadores na Sala</div>
         <div class="players-list" id="lobby-players-list">
-            <div style="color: #666; font-size: 0.9rem; font-weight: 700;">Carregando participantes...</div>
+            <div style="color: #666; font-size: 0.95rem; font-weight: 700;">Carregando participantes...</div>
         </div>
-        <div id="host-start-container" style="display: none; margin-top: 15px; width: 100%;">
+        <div id="host-start-container" style="display: none; margin-top: 20px; width: 100%;">
             <button class="btn" onclick="startImpostorGame()">
                 <i class="fa-solid fa-play"></i> INICIAR PARTIDA
             </button>
         </div>
-        <div id="guest-waiting-container" style="color: #000; font-weight: 700; font-size: 0.85rem; margin-top: 10px; text-transform: uppercase;">
+        <div id="guest-waiting-container" style="color: #000; font-weight: 700; font-size: 0.95rem; margin-top: 12px; text-transform: uppercase;">
             Aguardando o anfitrião iniciar o jogo...
         </div>
     </div>
@@ -416,12 +417,12 @@
         <div class="flip-card-container" id="flip-card" onclick="toggleCardFlip()">
             <div class="flip-card-inner">
                 <div class="flip-card-front">
-                    <div style="font-size: 0.8rem; letter-spacing: 1px; font-weight: 700; font-family: var(--font-mono);">TOQUE PARA VIRAR</div>
-                    <div style="font-size: 3rem; margin: auto;"><i class="fa-solid fa-mask"></i></div>
+                    <div style="font-size: 0.85rem; letter-spacing: 1px; font-weight: 700; font-family: var(--font-mono);">TOQUE PARA VIRAR</div>
+                    <div style="font-size: 3.5rem; margin: auto;"><i class="fa-solid fa-mask"></i></div>
                     <div class="card-brand">IMPOSTOR</div>
                 </div>
                 <div class="flip-card-back">
-                    <div style="font-size: 0.75rem; font-weight: 700; color: #000; text-transform: uppercase; font-family: var(--font-mono);" id="back-subtitle">Sua Palavra</div>
+                    <div style="font-size: 0.8rem; font-weight: 700; color: #000; text-transform: uppercase; font-family: var(--font-mono);" id="back-subtitle">Sua Palavra</div>
                     <div class="secret-word-box" id="secret-word-display">...</div>
                     <div class="card-brand">IMPOSTOR</div>
                 </div>
@@ -431,7 +432,7 @@
         <div class="desc-text" id="phase-instructions">
             Memorize sua palavra. Discutam verbalmente entre vocês e deem dicas sutis sem revelar demais!
         </div>
-        <div id="host-voting-action" style="display: none; margin-top: 15px; width: 100%;">
+        <div id="host-voting-action" style="display: none; margin-top: 20px; width: 100%;">
             <button class="btn btn-green" onclick="goToVotingPhase()">
                 <i class="fa-solid fa-gavel"></i> ABRIR VOTAÇÃO
             </button>
@@ -441,7 +442,7 @@
     <!-- PAINEL 3: FASE DE VOTAÇÃO -->
     <div class="glass-card" id="voting-panel" style="display: none;">
         <div class="card-title"><i class="fa-solid fa-vote-yea"></i> Hora de Votar no Impostor!</div>
-        <div class="desc-text" style="color: #000; margin-bottom: 12px;">Quem você acha que é o impostor que não sabia a palavra?</div>
+        <div class="desc-text" style="color: #000; margin-bottom: 15px;">Quem você acha que é o impostor que não sabia a palavra?</div>
         <div class="players-list" id="voting-players-list">
             <!-- Gerado via JS -->
         </div>
@@ -625,7 +626,8 @@
                 if(myAssignment.role === 'impostor') {
                     statusIcon.className = "fa-solid fa-skull icon-sphere";
                     wordBox.className = "secret-word-box impostor-alert";
-                    wordBox.innerHTML = `VOCÊ É O IMPOSTOR!<br><span style="font-size: 0.8rem; display:block; margin-top:6px; font-weight:normal;">Dica: ${myAssignment.hint}</span>`;
+                    // Garante que o impostor recebe a dica da palavra da rodada
+                    wordBox.innerHTML = `VOCÊ É O IMPOSTOR!<br><span style="font-size: 0.85rem; display:block; margin-top:8px; font-weight:normal; color:#fff;">Dica: ${myAssignment.hint}</span>`;
                     backSubtitle.innerText = "Seu Papel";
                     instructions.innerHTML = `Finja que sabe a palavra, preste atenção nas dicas dos outros e não levante suspeitas!`;
                 } else {
