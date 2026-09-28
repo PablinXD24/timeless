@@ -317,7 +317,7 @@
 </div>
 
 <div class="container">
-    <!-- PAINEL 1: LOBBY / AGUARDANDO (Oculto visualmente mas mantido para lógica) -->
+    <!-- PAINEL 1: LOBBY / AGUARDANDO (Mantido para lógica de conexão) -->
     <div class="glass-card" id="lobby-panel" style="display: none;">
         <div class="card-title"><i class="fa-solid fa-users"></i> Jogadores na Sala</div>
         <div class="players-list" id="lobby-players-list">
@@ -355,7 +355,7 @@
         <div class="desc-text" id="phase-instructions" style="display: none;">
             Memorize sua palavra. Discutam verbalmente entre vocês e deem dicas sutis sem revelar demais!
         </div>
-        <div id="host-voting-action" style="display: none; margin-top: 15px; width: 100%;">
+        <div id="host-voting-action" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; z-index: 100;">
             <button class="btn btn-green" onclick="goToVotingPhase()">
                 <i class="fa-solid fa-gavel"></i> ABRIR VOTAÇÃO
             </button>
@@ -363,7 +363,7 @@
     </div>
 
     <!-- PAINEL 3: FASE DE VOTAÇÃO -->
-    <div class="glass-card" id="voting-panel" style="display: none;">
+    <div class="glass-card" id="voting-panel" style="display: none; max-width: 440px; width: 100%;">
         <div class="card-title"><i class="fa-solid fa-vote-yea"></i> Hora de Votar no Impostor!</div>
         <div class="desc-text" style="color: #000; margin-bottom: 12px;">Quem você acha que é o impostor que não sabia a palavra?</div>
         <div class="players-list" id="voting-players-list">
@@ -404,7 +404,7 @@
     let isHost = false;
     let myName = "Jogador";
 
-    // Banco expandido e aprimorado de palavras secretas e dicas refinadas para o Impostor
+    // Banco de palavras secretas e dicas sutis/complexas para o Impostor (nada óbvias)
     const wordPool = [
         { secret: "Café", hint: "Frequentemente associado a rituais de transição temporal e dependência comportamental" },
         { secret: "Pizza", hint: "Estrutura geométrica fragmentada voltada para consumo coletivo noturno" },
@@ -415,12 +415,7 @@
         { secret: "Chocolate", hint: "Substância sólida de conversão térmica rápida com propriedades estimulantes" },
         { secret: "Guitarra", hint: "Artefato gerador de ondas acústicas moduladas por tensão mecânica" },
         { secret: "Cinema", hint: "Câmara de privação sensorial coletiva focada em ilusões ópticas projetadas" },
-        { secret: "Avião", hint: "Mecanismo de propulsão atmosférica para transposição rápida de distâncias" },
-        { secret: "Relógio", hint: "Instrumento cíclico de contagem métrica e fragmentação contínua da efemeridade" },
-        { secret: "Biblioteca", hint: "Santuário estático de codificação física e preservação mnemônica coletiva" },
-        { secret: "Fones de Ouvido", hint: "Cápsulas de isolamento acústico subjetivo integradas ao córtex sensorial" },
-        { secret: "Montanha-Russa", hint: "Trajetória sinuosa de aceleração gravitacional e flutuação abrupta de estímulos" },
-        { secret: "Vulcão", hint: "Gêiser tectônico de liberação energética extrema e reconfiguração topográfica" }
+        { secret: "Avião", hint: "Mecanismo de propulsão atmosférica para transposição rápida de distâncias" }
     ];
 
     // Transição estilo portal Hub
@@ -462,7 +457,7 @@
         }
     });
 
-    // Função do Host para iniciar a partida com seleção otimizada de palavra e impostor
+    // Função do Host para iniciar a partida
     window.startImpostorGame = function() {
         if(!isHost) return;
 
@@ -476,10 +471,9 @@
                 return;
             }
 
-            // Sorteia 1 Impostor de forma totalmente randômica
+            // Sorteia 1 Impostor
             const impostorId = playerIds[Math.floor(Math.random() * playerIds.length)];
-            
-            // Seleção otimizada da palavra secreta baseada em aleatoriedade aprimorada
+            // Sorteia palavra secreta
             const chosenWordObj = wordPool[Math.floor(Math.random() * wordPool.length)];
 
             let assignments = {};
@@ -539,11 +533,11 @@
 
                 if(myAssignment.role === 'impostor') {
                     wordBox.className = "secret-word-box impostor-alert";
-                    wordBox.innerHTML = `VOCÊ É O IMPOSTOR!<br><span style="font-size: 0.9rem; display:block; margin-top:10px; font-weight:normal; color:#fff;">Dica estratégica: ${myAssignment.hint}</span>`;
+                    wordBox.innerHTML = `VOCÊ É O IMPOSTOR!<br><span style="font-size: 0.9rem; display:block; margin-top:10px; font-weight:normal; color:#fff;">Dica: ${myAssignment.hint}</span>`;
                     backSubtitle.innerText = "Seu Papel";
                 } else {
                     wordBox.className = "secret-word-box";
-                    wordBox.innerText = myAssignment.word;
+                    wordBox.innerHTML = `${myAssignment.word}<br><span style="font-size: 0.85rem; display:block; margin-top:8px; font-weight:normal; color:#555;">Dica geral: ${myAssignment.hint}</span>`;
                     backSubtitle.innerText = "Palavra Secreta";
                 }
 
