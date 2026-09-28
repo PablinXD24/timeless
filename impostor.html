@@ -53,7 +53,7 @@
         .container {
             position: relative;
             width: 100%;
-            max-width: 480px;
+            max-width: 520px;
             z-index: 10;
             display: flex;
             flex-direction: column;
@@ -64,10 +64,10 @@
 
         h1 { 
             font-family: var(--font-display);
-            font-size: clamp(2.4rem, 10vw, 4rem); 
+            font-size: clamp(2.5rem, 12vw, 4.5rem); 
             font-weight: 800; 
             line-height: 0.9; 
-            letter-spacing: -1.5px; 
+            letter-spacing: -1px; 
             text-transform: uppercase; 
             margin-bottom: 10px; 
             text-align: center;
@@ -75,7 +75,6 @@
             width: 100%;
             word-break: break-word;
             overflow-wrap: break-word;
-            padding: 0 5px;
         }
         
         .subtitle { 
@@ -86,7 +85,7 @@
             padding: 6px 14px; 
             border: 3px solid #000000;
             box-shadow: 4px 4px 0px #000000;
-            letter-spacing: 1px; 
+            letter-spacing: 1.5px; 
             margin-bottom: 20px; 
             font-weight: 700;
             text-transform: uppercase;
@@ -116,7 +115,7 @@
             background: #ffffff;
             border: 4px solid #000000;
             border-radius: 0px;
-            padding: 20px 16px;
+            padding: 20px;
             margin-bottom: 20px;
             box-shadow: 6px 6px 0px #000000;
             text-align: center;
@@ -138,7 +137,7 @@
         .flip-card-container {
             perspective: 1000px;
             width: 100%;
-            max-width: 270px;
+            max-width: 280px;
             height: 330px;
             margin: 0 auto 15px auto;
             cursor: pointer;
@@ -169,7 +168,7 @@
             justify-content: space-between;
             padding: 20px;
             border: 4px solid #000000;
-            box-shadow: 5px 5px 0px #000000;
+            box-shadow: 6px 6px 0px #000000;
         }
 
         .flip-card-front {
@@ -181,17 +180,18 @@
             background: #ffd600;
             color: #000000;
             transform: rotateY(180deg);
+            overflow-y: auto;
         }
 
         .card-brand { font-family: var(--font-mono); font-size: 0.9rem; font-weight: 700; align-self: flex-end; margin-top: auto; color: inherit; text-transform: uppercase; }
         
         .secret-word-box {
             font-family: var(--font-data);
-            font-size: clamp(1.1rem, 4vw, 1.35rem);
+            font-size: clamp(1rem, 4vw, 1.25rem);
             font-weight: 700;
             color: #000000;
             background: #ffffff;
-            padding: 12px 10px;
+            padding: 12px;
             border-radius: 0px;
             border: 3px solid #000000;
             box-shadow: 3px 3px 0px #000000;
@@ -206,7 +206,7 @@
             background: #ff2a75;
             border-color: #000000;
             box-shadow: 3px 3px 0px #000000;
-            font-size: clamp(0.95rem, 3.5vw, 1.1rem);
+            font-size: clamp(0.9rem, 3.5vw, 1.1rem);
             line-height: 1.3;
         }
 
@@ -241,7 +241,7 @@
         .player-row {
             background: #f0f0f0;
             border: 3px solid #000000;
-            padding: 12px 14px;
+            padding: 12px 15px;
             border-radius: 0px;
             display: flex;
             justify-content: space-between;
@@ -280,7 +280,7 @@
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            gap: 10px;
+            gap: 8px;
             text-align: center;
             word-break: break-word;
         }
@@ -304,7 +304,7 @@
             background: #ffffff;
             color: #000000; 
             border: 3px solid #000000;
-            padding: 14px 12px; 
+            padding: 14px 16px; 
             border-radius: 0px; 
             font-weight: 700; 
             font-size: clamp(0.9rem, 3.5vw, 1rem);
@@ -353,18 +353,17 @@
             letter-spacing: -1px; 
             margin-bottom: 12px;
             word-break: break-word;
-            padding: 0 5px;
         }
 
         .overlay-desc {
             font-family: var(--font-data); 
-            font-size: clamp(0.95rem, 3.8vw, 1.15rem); 
+            font-size: clamp(1rem, 4vw, 1.15rem); 
             color: #fff;
             background: #1e1e24;
             border: 4px solid #000;
-            padding: 20px 16px;
+            padding: 20px;
             width: 100%;
-            max-width: 420px; 
+            max-width: 440px; 
             margin-bottom: 20px; 
             line-height: 1.5;
             text-transform: uppercase;
@@ -379,8 +378,8 @@
         }
         @keyframes fall {
             0% { transform: translateY(-5vh) translateX(0) scale(0.8); top: 0; }
-            50% { transform: translateY(50vh) translateX(20px) scale(1.1); top: 0; }
-            100% { transform: translateY(105vh) translateX(-20px) scale(0.8); top: 0; }
+            50% { transform: translateY(50vh) translateX(25px) scale(1.1); top: 0; }
+            100% { transform: translateY(105vh) translateX(-25px) scale(0.8); top: 0; }
         }
     </style>
 </head>
@@ -393,7 +392,7 @@
 <div class="overlay" id="result-overlay">
     <div class="overlay-title" id="result-title">FIM DE JOGO</div>
     <div class="overlay-desc" id="result-desc">Carregando detalhes do resultado...</div>
-    <div style="width: 100%; max-width: 280px;">
+    <div style="width: 100%; max-width: 300px;">
         <button class="btn btn-blue" onclick="triggerPortalExit('index')">
             <i class="fa-solid fa-house"></i> Voltar pro Hub
         </button>
@@ -419,24 +418,24 @@
                 <i class="fa-solid fa-play"></i> INICIAR PARTIDA
             </button>
         </div>
-        <div id="guest-waiting-container" style="color: #000; font-weight: 700; font-size: 0.9rem; margin-top: 10px; text-transform: uppercase; word-break: break-word;">
+        <div id="guest-waiting-container" style="color: #000; font-weight: 700; font-size: 0.9rem; margin-top: 10px; text-transform: uppercase;">
             Aguardando o anfitrião iniciar o jogo...
         </div>
     </div>
 
     <!-- PAINEL 2: FASE DE REVELAÇÃO DA PALAVRA / DISCUSSÃO -->
-    <div id="game-panel" style="display: none; width: 100%; flex-direction: column; align-items: center;">
+    <div id="game-panel" style="display: none; width: 100%; display: flex; flex-direction: column; align-items: center;">
         
         <!-- CARTA COM FLIP (ESTÉTICA SKETCH) -->
         <div class="flip-card-container" id="flip-card" onclick="toggleCardFlip()">
             <div class="flip-card-inner">
                 <div class="flip-card-front">
-                    <div style="font-size: 0.85rem; letter-spacing: 1px; font-weight: 700; font-family: var(--font-mono);">TOQUE PARA VIRAR</div>
-                    <div style="font-size: 3.5rem; margin: auto;"><i class="fa-solid fa-mask"></i></div>
+                    <div style="font-size: 0.8rem; letter-spacing: 1px; font-weight: 700; font-family: var(--font-mono);">TOQUE PARA VIRAR</div>
+                    <div style="font-size: 3rem; margin: auto;"><i class="fa-solid fa-mask"></i></div>
                     <div class="card-brand">IMPOSTOR</div>
                 </div>
                 <div class="flip-card-back">
-                    <div style="font-size: 0.8rem; font-weight: 700; color: #000; text-transform: uppercase; font-family: var(--font-mono);" id="back-subtitle">Sua Palavra</div>
+                    <div style="font-size: 0.75rem; font-weight: 700; color: #000; text-transform: uppercase; font-family: var(--font-mono);" id="back-subtitle">Sua Palavra</div>
                     <div class="secret-word-box" id="secret-word-display">...</div>
                     <div class="card-brand">IMPOSTOR</div>
                 </div>
@@ -456,7 +455,7 @@
     <!-- PAINEL 3: FASE DE VOTAÇÃO -->
     <div class="glass-card" id="voting-panel" style="display: none;">
         <div class="card-title"><i class="fa-solid fa-vote-yea"></i> Hora de Votar no Impostor!</div>
-        <div class="desc-text" style="color: #000; margin-bottom: 12px; font-size: 0.95rem;">Quem você acha que é o impostor que não sabia a palavra?</div>
+        <div class="desc-text" style="color: #000; margin-bottom: 12px;">Quem você acha que é o impostor que não sabia a palavra?</div>
         <div class="players-list" id="voting-players-list">
             <!-- Gerado via JS -->
         </div>
@@ -640,7 +639,6 @@
                 if(myAssignment.role === 'impostor') {
                     statusIcon.className = "fa-solid fa-skull icon-sphere";
                     wordBox.className = "secret-word-box impostor-alert";
-                    // Garante que o impostor recebe a dica sutil e enigmática da rodada
                     wordBox.innerHTML = `VOCÊ É O IMPOSTOR!<br><span style="font-size: 0.8rem; display:block; margin-top:6px; font-weight:normal; color:#fff;">Contexto enigmático: ${myAssignment.hint}</span>`;
                     backSubtitle.innerText = "Seu Papel";
                     instructions.innerHTML = `Finja que sabe a palavra, preste atenção nas dicas dos outros e não levante suspeitas!`;
