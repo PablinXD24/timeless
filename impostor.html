@@ -6,12 +6,12 @@
     <title>IMPOSTOR - Jogo dos Inocentes</title>
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Syne:wght@700;800&family=VT323&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Syne:wght@700;800&family=VT323&display=swap" rel="stylesheet">
 
     <style>
         :root {
             --font-display: 'Syne', sans-serif;
-            --font-data: 'Space Grotesk', sans-serif;
+            --font-data: 'Special Elite', cursive, monospace;
             --font-mono: 'VT323', monospace;
             --card-radius: 20px;
         }
@@ -97,7 +97,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 30px;
+            padding: 40px 30px;
             border: 4px solid #000000;
             box-shadow: 8px 8px 0px #000000;
             overflow: hidden;
@@ -117,29 +117,26 @@
 
         .card-brand { font-family: var(--font-mono); font-size: 1rem; font-weight: 700; align-self: flex-end; margin-top: auto; color: inherit; text-transform: uppercase; }
         
-        .secret-word-box {
+        /* Texto integrado diretamente na carta com estilo máquina de escrever / carimbo */
+        .secret-word-content {
             font-family: var(--font-data);
-            font-size: clamp(1.2rem, 5vw, 1.8rem);
-            font-weight: 700;
+            font-size: clamp(1.5rem, 6vw, 2.3rem);
+            font-weight: 400;
             color: #000000;
-            background: #ffffff;
-            padding: 20px;
-            border-radius: 12px;
-            border: 3px solid #000000;
-            box-shadow: 4px 4px 0px #000000;
             margin: auto 0;
             word-break: break-word;
             overflow-wrap: break-word;
             text-transform: uppercase;
+            letter-spacing: 2px;
+            line-height: 1.4;
+            text-shadow: 1px 1px 0px rgba(0,0,0,0.15);
         }
 
-        .secret-word-box.impostor-alert {
-            color: #fff;
-            background: #ff2a75;
-            border-color: #000000;
-            box-shadow: 4px 4px 0px #000000;
-            font-size: clamp(1rem, 4vw, 1.3rem);
-            line-height: 1.4;
+        .secret-word-content.impostor-alert {
+            color: #ffffff;
+            font-size: clamp(1.3rem, 5vw, 2rem);
+            text-shadow: 2px 2px 0px #000000;
+            line-height: 1.5;
         }
 
         /* --- LISTAS E JOGADORES --- */
@@ -378,7 +375,8 @@
                 </div>
                 <div class="flip-card-back">
                     <div style="font-size: 0.9rem; font-weight: 700; color: #000; text-transform: uppercase; font-family: var(--font-mono);" id="back-subtitle">Sua Palavra</div>
-                    <div class="secret-word-box" id="secret-word-display">...</div>
+                    <!-- Texto integrado diretamente na carta usando a fonte Special Elite (estilo máquina de escrever impressa) -->
+                    <div class="secret-word-content" id="secret-word-display">...</div>
                     <div class="card-brand">IMPOSTOR</div>
                 </div>
             </div>
@@ -572,11 +570,11 @@
                 const backSubtitle = document.getElementById('back-subtitle');
 
                 if(myAssignment.role === 'impostor') {
-                    wordBox.className = "secret-word-box impostor-alert";
-                    wordBox.innerHTML = `VOCÊ É O IMPOSTOR!<br><span style="font-size: 0.8rem; display:block; margin-top:6px; font-weight:normal; color:#fff;">Dica: ${myAssignment.hint}</span>`;
+                    wordBox.className = "secret-word-content impostor-alert";
+                    wordBox.innerHTML = `VOCÊ É O IMPOSTOR!<br><span style="font-size: 1rem; display:block; margin-top:10px; font-weight:normal; color:#fff; font-family:var(--font-data);">Dica: ${myAssignment.hint}</span>`;
                     backSubtitle.innerText = "Seu Papel";
                 } else {
-                    wordBox.className = "secret-word-box";
+                    wordBox.className = "secret-word-content";
                     wordBox.innerHTML = `${myAssignment.word}`;
                     backSubtitle.innerText = "Palavra Secreta";
                 }
@@ -636,12 +634,6 @@
 
                 let mostVotedId = null;
                 let maxVotes = -1;
-                Object.keys(voteCounts).label(id => {
-                    if(voteCounts[id] > maxVotes) {
-                        maxVotes = voteCounts[id];
-                        mostVotedId = id;
-                    }
-                });
                 Object.keys(voteCounts).forEach(id => {
                     if(voteCounts[id] > maxVotes) {
                         maxVotes = voteCounts[id];
