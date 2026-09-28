@@ -6,65 +6,51 @@
     <title>IMPOSTOR - Jogo dos Inocentes</title>
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Syne:wght@700;800&family=VT323&display=swap" rel="stylesheet">
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700;900&family=Comfortaa:wght@400;700&display=swap');
-
         :root {
-            --aero-orange: #ff3b30;
-            --aero-orange-light: #ff6b6b;
-            --aero-blue: #007aff;
-            --aero-cyan: #32d74b;
-            --aero-purple: #af52de;
-            --bg-gradient: linear-gradient(135deg, #1c1c1e 0%, #2c2c2e 50%, #1a1a24 100%);
-            --glass-bg: rgba(255, 255, 255, 0.08);
-            --glass-border: rgba(255, 255, 255, 0.15);
-            --font-display: 'Architects Daughter', cursive;
-            --font-data: 'Comfortaa', cursive;
-            --text-light: #f5f5f7;
-            --card-radius: 15px 225px 15px 255px/255px 15px 255px 15px;
+            --font-display: 'Syne', sans-serif;
+            --font-data: 'Space Grotesk', sans-serif;
+            --font-mono: 'VT323', monospace;
+            --island-bezier: cubic-bezier(0.25, 1, 0.5, 1);
+            --card-radius: 0px;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
-            background: var(--bg-gradient);
-            background-attachment: fixed;
-            color: var(--text-light);
+            background-color: #000000;
+            color: #000000;
             min-height: 100vh; width: 100vw;
-            font-family: var(--font-display);
+            font-family: var(--font-data);
             display: flex; flex-direction: column;
             align-items: center;
             overflow-x: hidden;
             padding: 20px;
             position: relative;
+            transition: transform 0.6s cubic-bezier(0.7, 0, 0.3, 1), opacity 0.4s ease;
         }
 
-        /* Camadas de Esferas Líquidas de fundo Estilo Apple Dark Aero */
-        .noise { 
+        /* --- EFEITO PORTAL FECHANDO (CINEMÁTICO ARANHAVERSO) --- */
+        body.portal-closing {
+            transform: scaleY(0.005) scaleX(1.2);
+            opacity: 0;
+            background-color: #000000 !important;
+            filter: brightness(3) contrast(2);
+        }
+
+        .noise, .ambilight-bg { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: radial-gradient(circle at 10% 15%, rgba(255, 59, 48, 0.18) 0%, transparent 35%),
-                        radial-gradient(circle at 90% 25%, rgba(0, 122, 255, 0.2) 0%, transparent 40%),
-                        radial-gradient(circle at 50% 90%, rgba(175, 82, 222, 0.15) 0%, transparent 35%),
-                        radial-gradient(circle at 25% 65%, rgba(50, 215, 75, 0.12) 0%, transparent 30%);
-            pointer-events: none; z-index: 1; 
-        }
-        .ambilight-bg { 
-            position: fixed; top: -30%; left: -30%; width: 160%; height: 160%; z-index: 0; opacity: 0.5; 
-            background: radial-gradient(circle at center, rgba(40,40,45,0.9) 0%, rgba(20,20,25,0.6) 50%, transparent 100%);
-            animation: fluidMotion 20s ease-in-out infinite alternate;
-        }
-
-        @keyframes fluidMotion {
-            0% { transform: translate(0, 0) rotate(0deg) scale(1); }
-            100% { transform: translate(4%, 3%) rotate(8deg) scale(1.08); }
+            z-index: 0; opacity: 0.15; 
+            background: repeating-linear-gradient(45deg, #222, #222 1px, transparent 1px, transparent 10px); 
+            pointer-events: none; 
         }
 
         .container {
             position: relative;
             width: 100%;
-            max-width: 450px;
+            max-width: 480px;
             z-index: 10;
             display: flex;
             flex-direction: column;
@@ -73,71 +59,70 @@
         }
 
         h1 { 
-            font-size: 2.7rem; font-weight: 900; letter-spacing: -1.5px; 
-            background: linear-gradient(135deg, #ff453a, #ff9f0a, #0a84ff);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            text-transform: uppercase; margin-bottom: 2px; text-align: center;
-            filter: drop-shadow(0 3px 6px rgba(255, 69, 58, 0.3));
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 10vw, 5rem); 
+            font-weight: 800; 
+            line-height: 0.85; 
+            letter-spacing: -2px; 
+            text-transform: uppercase; 
+            margin-bottom: 10px; 
+            text-align: center;
+            color: #fff;
+            width: 100%;
+            word-break: break-word;
+            overflow-wrap: break-word;
         }
+        
         .subtitle { 
-            font-size: 0.8rem; font-family: var(--font-data); color: #ff9f0a;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.12), rgba(255,255,255,0.04));
-            padding: 5px 16px; border-radius: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255,255,255,0.2); 
-            border: 1px solid var(--glass-border);
-            letter-spacing: 1.5px; margin-bottom: 25px; font-weight: bold;
+            font-family: var(--font-mono);
+            font-size: 1.2rem; 
+            color: #000;
+            background: #00ff66;
+            padding: 6px 16px; 
+            border: 3px solid #000000;
+            box-shadow: 4px 4px 0px #000000;
+            letter-spacing: 1.5px; 
+            margin-bottom: 25px; 
+            font-weight: 700;
+            text-transform: uppercase;
         }
 
         /* --- CÁPSULA / ESFERA DE STATUS --- */
         .impostor-sphere-wrapper {
-            width: 150px; height: 150px;
-            background: radial-gradient(circle at 35% 25%, rgba(255,255,255,0.15) 0%, rgba(255,59,48,0.1) 40%, rgba(0,122,255,0.08) 100%);
-            border: 2px solid var(--glass-border);
-            border-radius: 50%;
+            width: 120px; height: 120px;
+            background: #ffd600;
+            border: 4px solid #000000;
             display: flex; justify-content: center; align-items: center;
             margin-bottom: 25px; position: relative;
-            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.4), 
-                        inset 0 -12px 25px rgba(0,0,0,0.3), 
-                        inset 0 12px 25px rgba(255,255,255,0.15);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-        }
-        
-        .impostor-sphere-wrapper::after {
-            content: ''; position: absolute; top: 6px; left: 50%; width: 85px; height: 40px;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0) 100%);
-            border-radius: 50% / 20px; transform: translateX(-50%); pointer-events: none;
+            box-shadow: 6px 6px 0px #000000;
         }
 
         .icon-sphere {
-            font-size: 3.5rem;
-            color: #ff453a;
-            filter: drop-shadow(0 4px 10px rgba(255,69,58,0.4));
+            font-size: 3rem;
+            color: #000000;
         }
 
-        /* --- PAINÉIS / CARDS DE VIDRO FOSCO --- */
+        /* --- PAINÉIS / CARDS ESTILO HUB --- */
         .glass-card {
             width: 100%;
-            background: linear-gradient(135deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.03) 100%);
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(25px) saturate(150%);
-            -webkit-backdrop-filter: blur(25px) saturate(150%);
-            border-radius: 30px;
+            background: #ffffff;
+            border: 4px solid #000000;
+            border-radius: 0px;
             padding: 22px;
             margin-bottom: 20px;
-            box-shadow: 0 25px 55px rgba(0, 0, 0, 0.3), 
-                        inset 0 1px 3px rgba(255,255,255,0.15),
-                        inset 0 -3px 10px rgba(0,0,0,0.2);
+            box-shadow: 6px 6px 0px #000000;
             text-align: center;
+            color: #000000;
         }
 
         .card-title {
-            font-size: 1.1rem;
-            font-weight: 900;
-            color: #ff9f0a;
-            margin-bottom: 12px;
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #000000;
+            margin-bottom: 15px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: -0.5px;
         }
 
         /* --- ESTÉTICA DE CARTA SKETCH COM FLIP --- */
@@ -169,55 +154,58 @@
             height: 100%;
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
-            border-radius: var(--card-radius);
+            border-radius: 0px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             padding: 24px;
-            border: 3px solid #000000;
-            box-shadow: 5px 6px 0px #000000;
+            border: 4px solid #000000;
+            box-shadow: 6px 6px 0px #000000;
         }
 
         .flip-card-front {
-            background: #222;
+            background: #ff2a75;
             color: #fff;
-            background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 2px, transparent 0, transparent 8px);
         }
 
         .flip-card-back {
-            background: #fdfdfd;
-            color: #1a1a1a;
+            background: #ffd600;
+            color: #000000;
             transform: rotateY(180deg);
         }
 
-        .card-brand { font-family: var(--font-display); font-size: 0.8rem; font-weight: 900; opacity: 0.4; align-self: flex-end; margin-top: auto; color: inherit; }
+        .card-brand { font-family: var(--font-mono); font-size: 1rem; font-weight: 700; align-self: flex-end; margin-top: auto; color: inherit; text-transform: uppercase; }
         
         .secret-word-box {
             font-family: var(--font-data);
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             font-weight: 700;
-            color: #1a1a1a;
-            background: rgba(0, 0, 0, 0.04);
+            color: #000000;
+            background: #ffffff;
             padding: 15px;
-            border-radius: 12px;
-            border: 2px dashed rgba(0, 0, 0, 0.2);
+            border-radius: 0px;
+            border: 3px solid #000000;
+            box-shadow: 3px 3px 0px #000000;
             margin: auto 0;
             word-break: break-word;
+            text-transform: uppercase;
         }
 
         .secret-word-box.impostor-alert {
-            color: #ff3b30;
-            background: rgba(255, 59, 48, 0.1);
-            border-color: rgba(255, 59, 48, 0.3);
-            text-shadow: 0 0 10px rgba(255,69,58,0.3);
-            letter-spacing: 1px;
+            color: #fff;
+            background: #ff2a75;
+            border-color: #000000;
+            box-shadow: 3px 3px 0px #000000;
         }
 
         .desc-text {
+            font-family: var(--font-data);
             font-size: 0.95rem;
-            color: rgba(255,255,255,0.75);
-            line-height: 1.5;
+            color: #000000;
+            font-weight: 700;
+            line-height: 1.4;
             margin-bottom: 15px;
+            text-transform: uppercase;
         }
 
         /* --- LISTAS E JOGADORES --- */
@@ -231,21 +219,25 @@
             margin-bottom: 15px;
         }
         .players-list::-webkit-scrollbar { width: 5px; }
-        .players-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+        .players-list::-webkit-scrollbar-thumb { background: #000000; }
 
         .player-row {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: #f0f0f0;
+            border: 3px solid #000000;
             padding: 12px 16px;
-            border-radius: 16px;
+            border-radius: 0px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-weight: 700;
             font-size: 0.95rem;
+            color: #000000;
+            box-shadow: 3px 3px 0px #000000;
+            text-transform: uppercase;
+            font-family: var(--font-data);
         }
 
-        /* --- BOTÕES LÍQUIDOS --- */
+        /* --- BOTÕES LÍQUIDOS ESTILO HUB --- */
         .panel-controls {
             width: 100%;
             display: flex; flex-direction: column; gap: 14px;
@@ -253,89 +245,107 @@
         }
 
         .btn {
-            background: linear-gradient(to bottom, #ff6b6b 0%, #ff3b30 45%, #d70015 60%, #990000 100%);
-            color: white; border: 1px solid rgba(255,255,255,0.3); padding: 18px;
-            border-radius: 22px; font-weight: 900; font-size: 1.1rem; width: 100%; cursor: pointer;
-            box-shadow: 0 12px 28px rgba(255, 59, 48, 0.35), 
-                        inset 0 -4px 0 rgba(0,0,0,0.3), 
-                        inset 0 3px 6px rgba(255,255,255,0.4);
-            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-transform: uppercase;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            text-shadow: 0 2px 3px rgba(0,0,0,0.3);
-            position: relative; overflow: hidden;
+            background: #ffd600; 
+            color: #000000; 
+            border: 4px solid #000000; 
+            padding: 18px; 
+            border-radius: 0px; 
+            font-weight: 800; 
+            font-size: 1.1rem; 
+            font-family: var(--font-display); 
+            width: 100%; 
+            cursor: pointer; 
+            box-shadow: 6px 6px 0px #000000; 
+            transition: 0.2s ease; 
+            text-transform: uppercase; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 10px;
         }
-        .btn::before {
-            content: ''; position: absolute; top: 2px; left: 5%; width: 90%; height: 35%;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 100%);
-            border-radius: 50% / 12px; pointer-events: none;
-        }
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 16px 35px rgba(255, 59, 48, 0.5); filter: brightness(1.05); }
-        .btn:active { transform: translateY(1px); box-shadow: 0 6px 15px rgba(255, 59, 48, 0.25); }
+        .btn:hover { transform: translate(-2px, -2px); box-shadow: 8px 8px 0px #000000; background: #adff2f; }
+        .btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px #000000; }
         
         .btn-blue { 
-            background: linear-gradient(to bottom, #4da3ff 0%, #007aff 45%, #0056b3 60%, #003d82 100%);
-            box-shadow: 0 12px 28px rgba(0, 122, 255, 0.35), 
-                        inset 0 -4px 0 rgba(0,0,0,0.3), 
-                        inset 0 3px 6px rgba(255,255,255,0.4);
+            background: #00bfff;
+            color: #000000;
         }
-        .btn-blue:hover { box-shadow: 0 16px 35px rgba(0, 122, 255, 0.5); }
+        .btn-blue:hover { background: #adff2f; }
 
         .btn-green { 
-            background: linear-gradient(to bottom, #5fe878 0%, #32d74b 45%, #249a35 60%, #176622 100%);
-            box-shadow: 0 12px 28px rgba(50, 215, 75, 0.35), 
-                        inset 0 -4px 0 rgba(0,0,0,0.3), 
-                        inset 0 3px 6px rgba(255,255,255,0.4);
+            background: #00ff66; 
+            color: #000000;
         }
-        .btn-green:hover { box-shadow: 0 16px 35px rgba(50, 215, 75, 0.5); }
+        .btn-green:hover { background: #adff2f; }
 
         /* Votação */
         .vote-btn {
-            background: linear-gradient(to bottom, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.05) 100%);
-            color: white; border: 1px solid rgba(255,255,255,0.2);
-            padding: 14px; border-radius: 16px; font-weight: 700; font-size: 1rem;
-            width: 100%; cursor: pointer; transition: all 0.2s; text-transform: uppercase;
-            display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2), inset 0 1px 2px rgba(255,255,255,0.2);
+            background: #ffffff;
+            color: #000000; 
+            border: 3px solid #000000;
+            padding: 14px; 
+            border-radius: 0px; 
+            font-weight: 700; 
+            font-size: 1rem;
+            width: 100%; 
+            cursor: pointer; 
+            transition: 0.2s; 
+            text-transform: uppercase;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            box-shadow: 4px 4px 0px #000000;
+            font-family: var(--font-data);
         }
         .vote-btn:hover {
-            background: linear-gradient(to bottom, #ff3b30, #c50f1f);
-            border-color: rgba(255,255,255,0.4);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(255,59,48,0.4);
+            background: #ff2a75;
+            color: #fff;
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px #000000;
         }
         .vote-btn.voted {
-            background: linear-gradient(to bottom, #32d74b, #249a35);
-            border-color: rgba(255,255,255,0.5);
+            background: #00ff66;
+            color: #000;
+            border-color: #000;
         }
 
         /* --- MODAL DE FASE / OVERLAY DE RESULTADO --- */
         .overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(15, 15, 20, 0.88); z-index: 1000;
+            background: rgba(0, 0, 0, 0.92); z-index: 1000;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
-            backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
             padding: 20px; text-align: center;
         }
         .overlay.active { opacity: 1; pointer-events: auto; }
 
         .overlay-title {
-            font-size: 3rem; font-weight: 900; 
-            background: linear-gradient(135deg, #ff453a, #ff9f0a, #32d74b);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            text-transform: uppercase; letter-spacing: -1px; margin-bottom: 15px;
-            filter: drop-shadow(0 6px 20px rgba(255,69,58,0.4));
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 8vw, 3.5rem); 
+            font-weight: 800; 
+            color: #ffd600;
+            text-transform: uppercase; 
+            letter-spacing: -1px; 
+            margin-bottom: 15px;
         }
 
         .overlay-desc {
-            font-family: var(--font-data); font-size: 1.2rem; color: #f5f5f7;
-            max-width: 360px; margin-bottom: 25px; line-height: 1.6;
+            font-family: var(--font-data); 
+            font-size: 1.1rem; 
+            color: #fff;
+            background: #1e1e24;
+            border: 4px solid #000;
+            padding: 20px;
+            max-width: 400px; 
+            margin-bottom: 25px; 
+            line-height: 1.5;
+            text-transform: uppercase;
+            box-shadow: 6px 6px 0px #ff2a75;
         }
 
         .confetti {
-            position: absolute; width: 14px; height: 14px; opacity: 0.7;
-            border-radius: 50%; 
-            box-shadow: inset -3px -3px 6px rgba(0,0,0,0.3), inset 3px 3px 6px rgba(255,255,255,0.5);
+            position: absolute; width: 12px; height: 12px; opacity: 0.9;
+            border: 2px solid #000;
             animation: fall linear infinite;
         }
         @keyframes fall {
@@ -355,7 +365,7 @@
     <div class="overlay-title" id="result-title">FIM DE JOGO</div>
     <div class="overlay-desc" id="result-desc">Carregando detalhes do resultado...</div>
     <div style="width: 100%; max-width: 320px;">
-        <button class="btn btn-blue" onclick="window.location.href='index.html'">
+        <button class="btn btn-blue" onclick="triggerPortalExit('index')">
             <i class="fa-solid fa-house"></i> Voltar pro Hub
         </button>
     </div>
@@ -366,21 +376,21 @@
     <div class="subtitle" id="room-display">SALA: ----</div>
 
     <div class="impostor-sphere-wrapper">
-        <i class="fa-solid fa-user-secret icon-sphere" id="status-icon"></i>
+        <i class="fa-solid fa-user-ninja icon-sphere" id="status-icon"></i>
     </div>
 
     <!-- PAINEL 1: LOBBY / AGUARDANDO -->
     <div class="glass-card" id="lobby-panel">
         <div class="card-title"><i class="fa-solid fa-users"></i> Jogadores na Sala</div>
         <div class="players-list" id="lobby-players-list">
-            <div style="color: rgba(255,255,255,0.5); font-size: 0.9rem;">Carregando participantes...</div>
+            <div style="color: #666; font-size: 0.9rem; font-weight: 700;">Carregando participantes...</div>
         </div>
         <div id="host-start-container" style="display: none; margin-top: 15px;">
             <button class="btn" onclick="startImpostorGame()">
                 <i class="fa-solid fa-play"></i> INICIAR PARTIDA
             </button>
         </div>
-        <div id="guest-waiting-container" style="color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-top: 10px;">
+        <div id="guest-waiting-container" style="color: #000; font-weight: 700; font-size: 0.9rem; margin-top: 10px; text-transform: uppercase;">
             Aguardando o anfitrião iniciar o jogo...
         </div>
     </div>
@@ -393,12 +403,12 @@
         <div class="flip-card-container" id="flip-card" onclick="toggleCardFlip()">
             <div class="flip-card-inner">
                 <div class="flip-card-front">
-                    <div style="font-size: 0.9rem; letter-spacing: 1px; font-weight: bold; opacity: 0.7;">TOQUE PARA VIRAR</div>
-                    <div style="font-size: 4rem; margin: auto;"><i class="fa-solid fa-mask"></i></div>
+                    <div style="font-size: 0.85rem; letter-spacing: 1px; font-weight: 700; font-family: var(--font-mono);">TOQUE PARA VIRAR</div>
+                    <div style="font-size: 3.5rem; margin: auto;"><i class="fa-solid fa-mask"></i></div>
                     <div class="card-brand">IMPOSTOR</div>
                 </div>
                 <div class="flip-card-back">
-                    <div style="font-size: 0.8rem; font-weight: bold; color: #666; text-transform: uppercase;" id="back-subtitle">Sua Palavra</div>
+                    <div style="font-size: 0.8rem; font-weight: 700; color: #000; text-transform: uppercase; font-family: var(--font-mono);" id="back-subtitle">Sua Palavra</div>
                     <div class="secret-word-box" id="secret-word-display">...</div>
                     <div class="card-brand">IMPOSTOR</div>
                 </div>
@@ -473,6 +483,12 @@
         { secret: "Avião", category: "Transporte" }
     ];
 
+    // Transição estilo portal Hub
+    window.triggerPortalExit = function(targetFile) {
+        document.body.classList.add('portal-closing');
+        setTimeout(() => { window.location.href = `${targetFile}.html?room=${roomCode}`; }, 550);
+    }
+
     // Função de girar a carta
     window.toggleCardFlip = function() {
         const flipCard = document.getElementById('flip-card');
@@ -503,7 +519,7 @@
                 
                 const div = document.createElement('div');
                 div.className = 'player-row';
-                div.innerHTML = `<span><i class="fa-solid fa-user" style="color:var(--aero-orange); margin-right:8px;"></i> ${p.name || 'Anônimo'} ${pId === myId ? '(Você)' : ''}</span>`;
+                div.innerHTML = `<span><i class="fa-solid fa-user" style="color:#000; margin-right:8px;"></i> ${p.name || 'Anônimo'} ${pId === myId ? '(Você)' : ''}</span>`;
                 listEl.appendChild(div);
             });
         }
@@ -596,19 +612,19 @@
                 const backSubtitle = document.getElementById('back-subtitle');
 
                 if(myAssignment.role === 'impostor') {
-                    statusIcon.className = "fa-solid fa-skull-crossbones icon-sphere";
+                    statusIcon.className = "fa-solid fa-skull icon-sphere";
                     wordBox.className = "secret-word-box impostor-alert";
                     wordBox.innerText = myAssignment.word;
                     phaseTitle.innerText = "Sua Carta Secreta";
                     backSubtitle.innerText = "Papel Secreto";
-                    instructions.innerHTML = `Categoria: <b style="color:#ff9f0a">${data.category}</b><br>Finja que sabe a palavra e não levante suspeitas!`;
+                    instructions.innerHTML = `Categoria: <b style="color:#ff2a75">${data.category}</b><br>Finja que sabe a palavra e não levante suspeitas!`;
                 } else {
                     statusIcon.className = "fa-solid fa-shield-halved icon-sphere";
                     wordBox.className = "secret-word-box";
                     wordBox.innerText = myAssignment.word;
                     phaseTitle.innerText = "Sua Carta Secreta";
                     backSubtitle.innerText = "Palavra Secreta";
-                    instructions.innerHTML = `Categoria: <b style="color:#ff9f0a">${data.category}</b><br>Dê dicas sutis para provar que você é inocente sem dar a palavra exata ao impostor.`;
+                    instructions.innerHTML = `Categoria: <b style="color:#ff2a75">${data.category}</b><br>Dê dicas sutis para provar que você é inocente sem dar a palavra exata ao impostor.`;
                 }
 
                 if(isHost && data.status === 'playing') {
@@ -634,7 +650,7 @@
                             const p = players[pId];
                             const btn = document.createElement('button');
                             btn.className = 'vote-btn';
-                            btn.innerHTML = `<span><i class="fa-solid fa-user-detect" style="margin-right:8px;"></i> ${p.name || 'Jogador'}</span> <i class="fa-solid fa-chevron-right"></i>`;
+                            btn.innerHTML = `<span><i class="fa-solid fa-user-check" style="margin-right:8px;"></i> ${p.name || 'Jogador'}</span> <i class="fa-solid fa-chevron-right"></i>`;
                             btn.onclick = () => voteForPlayer(pId, p.name || 'Jogador');
                             vList.appendChild(btn);
                         });
@@ -694,10 +710,10 @@
 
         if(winnerTeam === 'Inocentes') {
             titleEl.innerHTML = `<i class="fa-solid fa-trophy"></i> VITÓRIA DOS INOCENTES!`;
-            descEl.innerHTML = `Vocês descobriram o impostor a tempo!<br><br>O impostor era: <b style="color:#ff3b30">${impostorName}</b>`;
+            descEl.innerHTML = `Vocês descobriram o impostor a tempo!<br><br>O impostor era: <b style="color:#ffd600">${impostorName}</b>`;
         } else {
             titleEl.innerHTML = `<i class="fa-solid fa-skull"></i> VITÓRIA DO IMPOSTOR!`;
-            descEl.innerHTML = `O impostor enganou todo mundo e passou despercebido!<br><br>O impostor era: <b style="color:#ff3b30">${impostorName}</b>`;
+            descEl.innerHTML = `O impostor enganou todo mundo e passou despercebido!<br><br>O impostor era: <b style="color:#ffd600">${impostorName}</b>`;
         }
 
         overlay.classList.add('active');
@@ -706,7 +722,7 @@
 
     function startConfettiAnimation() {
         const overlay = document.getElementById('result-overlay');
-        const colors = ['#ff3b30', '#ff9f0a', '#007aff', '#32d74b', '#af52de'];
+        const colors = ['#ffd600', '#ff2a75', '#00bfff', '#00ff66', '#b19cd9'];
         for (let i = 0; i < 90; i++) {
             const confetti = document.createElement('div');
             confetti.className = 'confetti';
