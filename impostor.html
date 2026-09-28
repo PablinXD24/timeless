@@ -469,18 +469,18 @@
     let isHost = false;
     let myName = "Jogador";
 
-    // Banco de palavras secretas temáticas para o Impostor
+    // Banco de palavras secretas e dicas para o Impostor
     const wordPool = [
-        { secret: "Café", category: "Bebidas & Alimentos" },
-        { secret: "Pizza", category: "Bebidas & Alimentos" },
-        { secret: "Praia", category: "Lugares & Viagem" },
-        { secret: "Futebol", category: "Esportes & Lazer" },
-        { secret: "Smartphone", category: "Tecnologia" },
-        { secret: "Abacaxi", category: "Frutas" },
-        { secret: "Chocolate", category: "Doces" },
-        { secret: "Guitarra", category: "Música" },
-        { secret: "Cinema", category: "Entretenimento" },
-        { secret: "Avião", category: "Transporte" }
+        { secret: "Café", hint: "Bebida quente e estimulante" },
+        { secret: "Pizza", hint: "Massa redonda assada com recheio" },
+        { secret: "Praia", hint: "Local com areia, mar e sol" },
+        { secret: "Futebol", hint: "Esporte coletivo jogado com uma bola" },
+        { secret: "Smartphone", hint: "Dispositivo eletrônico portátil com tela tátil" },
+        { secret: "Abacaxi", hint: "Fruta tropical com coroa e casca áspera" },
+        { secret: "Chocolate", hint: "Doce feito a partir de cacau" },
+        { secret: "Guitarra", hint: "Instrumento musical de cordas amplificado" },
+        { secret: "Cinema", hint: "Lugar para assistir a filmes na tela grande" },
+        { secret: "Avião", hint: "Veículo que voa transportando passageiros pelos ares" }
     ];
 
     // Transição estilo portal Hub
@@ -549,15 +549,14 @@
 
             // Sorteia 1 Impostor
             const impostorId = playerIds[Math.floor(Math.random() * playerIds.length)];
-            // Sorteia palavra secreta
+            // Sorteia palavra secreta e dica
             const chosenWordObj = wordPool[Math.floor(Math.random() * wordPool.length)];
 
             let assignments = {};
             playerIds.forEach(pId => {
                 assignments[pId] = {
                     role: pId === impostorId ? 'impostor' : 'innocent',
-                    word: pId === impostorId ? 'VOCÊ É O IMPOSTOR!' : chosenWordObj.secret,
-                    category: chosenWordObj.category
+                    word: pId === impostorId ? chosenWordObj.hint : chosenWordObj.secret
                 };
             });
 
@@ -565,7 +564,6 @@
                 status: 'playing',
                 assignments: assignments,
                 impostorId: impostorId,
-                category: chosenWordObj.category,
                 votes: {}
             });
         });
@@ -616,15 +614,15 @@
                     wordBox.className = "secret-word-box impostor-alert";
                     wordBox.innerText = myAssignment.word;
                     phaseTitle.innerText = "Sua Carta Secreta";
-                    backSubtitle.innerText = "Papel Secreto";
-                    instructions.innerHTML = `Categoria: <b style="color:#ff2a75">${data.category}</b><br>Finja que sabe a palavra e não levante suspeitas!`;
+                    backSubtitle.innerText = "Você é o Impostor (Dica)";
+                    instructions.innerHTML = `Você não sabe a palavra secreta!<br>Use a dica acima para tentar disfarçar e não levantar suspeitas!`;
                 } else {
                     statusIcon.className = "fa-solid fa-shield-halved icon-sphere";
                     wordBox.className = "secret-word-box";
                     wordBox.innerText = myAssignment.word;
                     phaseTitle.innerText = "Sua Carta Secreta";
                     backSubtitle.innerText = "Palavra Secreta";
-                    instructions.innerHTML = `Categoria: <b style="color:#ff2a75">${data.category}</b><br>Dê dicas sutis para provar que você é inocente sem dar a palavra exata ao impostor.`;
+                    instructions.innerHTML = `Dê dicas sutis para provar que você é inocente sem dar a palavra exata ao impostor.`;
                 }
 
                 if(isHost && data.status === 'playing') {
