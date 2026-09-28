@@ -432,18 +432,18 @@
     let isHost = false;
     let myName = "Jogador";
 
-    // Banco de palavras secretas e dicas sutis/complexas para o Impostor (nada óbvias)
+    // Banco de palavras secretas e dicas curtas/abstratas para o Impostor (sem entregar diretamente)
     const wordPool = [
-        { secret: "Café", hint: "Frequentemente associado a rituais de transição temporal e dependência comportamental" },
-        { secret: "Pizza", hint: "Estrutura geométrica fragmentada voltada para consumo coletivo noturno" },
-        { secret: "Praia", hint: "Interface de transição entre ecossistemas fluidos e particulados" },
-        { secret: "Futebol", hint: "Dinâmica cinemética baseada no deslocamento coletivo em torno de uma esfera" },
-        { secret: "Smartphone", hint: "Extensão cognitiva portátil de uso compulsivo cotidiano" },
-        { secret: "Abacaxi", hint: "Unidade orgânica acídica dotada de armadura externa e ornamentação superior" },
-        { secret: "Chocolate", hint: "Substância sólida de conversão térmica rápida com propriedades estimulantes" },
-        { secret: "Guitarra", hint: "Artefato gerador de ondas acústicas moduladas por tensão mecânica" },
-        { secret: "Cinema", hint: "Câmara de privação sensorial coletiva focada em ilusões ópticas projetadas" },
-        { secret: "Avião", hint: "Mecanismo de propulsão atmosférica para transposição rápida de distâncias" }
+        { secret: "Café", hint: "Ritual matinal" },
+        { secret: "Pizza", hint: "Fatias em círculo" },
+        { secret: "Praia", hint: "Areia e mar" },
+        { secret: "Futebol", hint: "Paixão nacional" },
+        { secret: "Smartphone", hint: "Tela brilhante" },
+        { secret: "Abacaxi", hint: "Coroa espinhosa" },
+        { secret: "Chocolate", hint: "Doce que derrete" },
+        { secret: "Guitarra", hint: "Som com cordas" },
+        { secret: "Cinema", hint: "Pipoca e tela grande" },
+        { secret: "Avião", hint: "Voa alto" }
     ];
 
     // Transição estilo portal Hub
@@ -572,11 +572,11 @@
 
                 if(myAssignment.role === 'impostor') {
                     wordBox.className = "secret-word-box impostor-alert";
-                    wordBox.innerHTML = `VOCÊ É O IMPOSTOR!<br><span style="font-size: 0.85rem; display:block; margin-top:8px; font-weight:normal; color:#fff;">Dica: ${myAssignment.hint}</span>`;
+                    wordBox.innerHTML = `VOCÊ É O IMPOSTOR!<br><span style="font-size: 0.8rem; display:block; margin-top:6px; font-weight:normal; color:#fff;">Dica: ${myAssignment.hint}</span>`;
                     backSubtitle.innerText = "Seu Papel";
                 } else {
                     wordBox.className = "secret-word-box";
-                    wordBox.innerHTML = `${myAssignment.word}<br><span style="font-size: 0.8rem; display:block; margin-top:6px; font-weight:normal; color:#555;">Dica: ${myAssignment.hint}</span>`;
+                    wordBox.innerHTML = `${myAssignment.word}`;
                     backSubtitle.innerText = "Palavra Secreta";
                 }
 
