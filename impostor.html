@@ -483,18 +483,18 @@
     let isHost = false;
     let myName = "Jogador";
 
-    // Banco de palavras secretas e dicas temáticas para o Impostor
+    // Banco de palavras secretas e dicas sutis/complexas para o Impostor (nada óbvias)
     const wordPool = [
-        { secret: "Café", hint: "Bebida quente muito consumida de manhã" },
-        { secret: "Pizza", hint: "Massa redonda assada com queijo e recheio" },
-        { secret: "Praia", hint: "Lugar com muita areia, sol e mar" },
-        { secret: "Futebol", hint: "Esporte jogado com uma bola e traves" },
-        { secret: "Smartphone", hint: "Aparelho eletrônico portátil com tela touch" },
-        { secret: "Abacaxi", hint: "Fruta tropical com casca cascuda e coroa" },
-        { secret: "Chocolate", hint: "Doce marrom feito a partir do cacau" },
-        { secret: "Guitarra", hint: "Instrumento musical de cordas amplificado" },
-        { secret: "Cinema", hint: "Local escuro com tela gigante para ver filmes" },
-        { secret: "Avião", hint: "Meio de transporte que voa pelos céus" }
+        { secret: "Café", hint: "Frequentemente associado a rituais de transição temporal e dependência comportamental" },
+        { secret: "Pizza", hint: "Estrutura geométrica fragmentada voltada para consumo coletivo noturno" },
+        { secret: "Praia", hint: "Interface de transição entre ecossistemas fluidos e particulados" },
+        { secret: "Futebol", hint: "Dinâmica cinemética baseada no deslocamento coletivo em torno de uma esfera" },
+        { secret: "Smartphone", hint: "Extensão cognitiva portátil de uso compulsivo cotidiano" },
+        { secret: "Abacaxi", hint: "Unidade orgânica acídica dotada de armadura externa e ornamentação superior" },
+        { secret: "Chocolate", hint: "Substância sólida de conversão térmica rápida com propriedades estimulantes" },
+        { secret: "Guitarra", hint: "Artefato gerador de ondas acústicas moduladas por tensão mecânica" },
+        { secret: "Cinema", hint: "Câmara de privação sensorial coletiva focada em ilusões ópticas projetadas" },
+        { secret: "Avião", hint: "Mecanismo de propulsão atmosférica para transposição rápida de distâncias" }
     ];
 
     // Transição estilo portal Hub
@@ -626,8 +626,8 @@
                 if(myAssignment.role === 'impostor') {
                     statusIcon.className = "fa-solid fa-skull icon-sphere";
                     wordBox.className = "secret-word-box impostor-alert";
-                    // Garante que o impostor recebe a dica da palavra da rodada
-                    wordBox.innerHTML = `VOCÊ É O IMPOSTOR!<br><span style="font-size: 0.85rem; display:block; margin-top:8px; font-weight:normal; color:#fff;">Dica: ${myAssignment.hint}</span>`;
+                    // Garante que o impostor recebe a dica sutil e enigmática da rodada
+                    wordBox.innerHTML = `VOCÊ É O IMPOSTOR!<br><span style="font-size: 0.85rem; display:block; margin-top:8px; font-weight:normal; color:#fff;">Contexto enigmático: ${myAssignment.hint}</span>`;
                     backSubtitle.innerText = "Seu Papel";
                     instructions.innerHTML = `Finja que sabe a palavra, preste atenção nas dicas dos outros e não levante suspeitas!`;
                 } else {
@@ -635,7 +635,7 @@
                     wordBox.className = "secret-word-box";
                     wordBox.innerText = myAssignment.word;
                     backSubtitle.innerText = "Palavra Secreta";
-                    instructions.innerHTML = `Dica da palavra: <b style="color:#ffd600">${myAssignment.hint}</b><br>Dê dicas sutis para provar que você é inocente sem dar a palavra exata.`;
+                    instructions.innerHTML = `Contexto enigmático: <b style="color:#ffd600">${myAssignment.hint}</b><br>Dê dicas sutis para provar que você é inocente sem dar a palavra exata.`;
                 }
 
                 if(isHost && data.status === 'playing') {
