@@ -469,18 +469,18 @@
     let isHost = false;
     let myName = "Jogador";
 
-    // Banco de palavras secretas e dicas para o Impostor
+    // Banco de palavras secretas e dicas temáticas para o Impostor
     const wordPool = [
-        { secret: "Café", hint: "Bebida quente e estimulante" },
-        { secret: "Pizza", hint: "Massa redonda assada com recheio" },
-        { secret: "Praia", hint: "Local com areia, mar e sol" },
-        { secret: "Futebol", hint: "Esporte coletivo jogado com uma bola" },
-        { secret: "Smartphone", hint: "Dispositivo eletrônico portátil com tela tátil" },
-        { secret: "Abacaxi", hint: "Fruta tropical com coroa e casca áspera" },
-        { secret: "Chocolate", hint: "Doce feito a partir de cacau" },
+        { secret: "Café", hint: "Bebida quente muito consumida de manhã" },
+        { secret: "Pizza", hint: "Massa redonda assada com queijo e recheio" },
+        { secret: "Praia", hint: "Lugar com muita areia, sol e mar" },
+        { secret: "Futebol", hint: "Esporte jogado com uma bola e traves" },
+        { secret: "Smartphone", hint: "Aparelho eletrônico portátil com tela touch" },
+        { secret: "Abacaxi", hint: "Fruta tropical com casca cascuda e coroa" },
+        { secret: "Chocolate", hint: "Doce marrom feito a partir do cacau" },
         { secret: "Guitarra", hint: "Instrumento musical de cordas amplificado" },
-        { secret: "Cinema", hint: "Lugar para assistir a filmes na tela grande" },
-        { secret: "Avião", hint: "Veículo que voa transportando passageiros pelos ares" }
+        { secret: "Cinema", hint: "Local escuro com tela gigante para ver filmes" },
+        { secret: "Avião", hint: "Meio de transporte que voa pelos céus" }
     ];
 
     // Transição estilo portal Hub
@@ -549,14 +549,15 @@
 
             // Sorteia 1 Impostor
             const impostorId = playerIds[Math.floor(Math.random() * playerIds.length)];
-            // Sorteia palavra secreta e dica
+            // Sorteia palavra secreta
             const chosenWordObj = wordPool[Math.floor(Math.random() * wordPool.length)];
 
             let assignments = {};
             playerIds.forEach(pId => {
                 assignments[pId] = {
                     role: pId === impostorId ? 'impostor' : 'innocent',
-                    word: pId === impostorId ? chosenWordObj.hint : chosenWordObj.secret
+                    word: pId === impostorId ? 'VOCÊ É O IMPOSTOR!' : chosenWordObj.secret,
+                    hint: chosenWordObj.hint
                 };
             });
 
@@ -614,15 +615,15 @@
                     wordBox.className = "secret-word-box impostor-alert";
                     wordBox.innerText = myAssignment.word;
                     phaseTitle.innerText = "Sua Carta Secreta";
-                    backSubtitle.innerText = "Você é o Impostor (Dica)";
-                    instructions.innerHTML = `Você não sabe a palavra secreta!<br>Use a dica acima para tentar disfarçar e não levantar suspeitas!`;
+                    backSubtitle.innerText = "Papel Secreto";
+                    instructions.innerHTML = `Dica da palavra: <b style="color:#ff2a75">${myAssignment.hint}</b><br>Finja que sabe a palavra e não levante suspeitas!`;
                 } else {
                     statusIcon.className = "fa-solid fa-shield-halved icon-sphere";
                     wordBox.className = "secret-word-box";
                     wordBox.innerText = myAssignment.word;
                     phaseTitle.innerText = "Sua Carta Secreta";
                     backSubtitle.innerText = "Palavra Secreta";
-                    instructions.innerHTML = `Dê dicas sutis para provar que você é inocente sem dar a palavra exata ao impostor.`;
+                    instructions.innerHTML = `Dica da palavra: <b style="color:#ff2a75">${myAssignment.hint}</b><br>Dê dicas sutis para provar que você é inocente sem dar a palavra exata ao impostor.`;
                 }
 
                 if(isHost && data.status === 'playing') {
