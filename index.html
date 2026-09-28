@@ -250,6 +250,7 @@
         .showcase-card:nth-child(5) { animation-delay: 0.5s; }
         .showcase-card:nth-child(6) { animation-delay: 0.6s; }
         .showcase-card:nth-child(7) { animation-delay: 0.7s; }
+        .showcase-card:nth-child(8) { animation-delay: 0.8s; }
 
         .showcase-yellow { background-color: #ffd600; }
         .showcase-purple { background-color: #b19cd9; }
@@ -258,6 +259,7 @@
         .showcase-orange { background-color: #ff8c00; }
         .showcase-green { background-color: #adff2f; }
         .showcase-pink { background-color: #ff69b4; }
+        .showcase-dark { background-color: #1e1e24; color: #fff; }
 
         .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
         .card-badge { 
@@ -286,11 +288,11 @@
             margin-bottom: 10px;
             transition: letter-spacing 0.4s ease, font-size 0.6s cubic-bezier(0.25, 1, 0.5, 1);
         }
-        .showcase-card.showcase-red h2 { color: #fff; }
+        .showcase-card.showcase-red h2, .showcase-card.showcase-dark h2 { color: #fff; }
         .showcase-card:hover h2 { font-size: 2.2rem; letter-spacing: 1px; }
 
         .card-divider { width: 100%; height: 3px; background: #000; margin-bottom: 1rem; transition: width 0.5s ease; }
-        .showcase-card.showcase-red .card-divider { background: #fff; }
+        .showcase-card.showcase-red .card-divider, .showcase-card.showcase-dark .card-divider { background: #fff; }
         .showcase-card:hover .card-divider { width: 40%; }
 
         .card-desc { 
@@ -304,7 +306,7 @@
             font-weight: 700;
             transition: font-size 0.6s cubic-bezier(0.25, 1, 0.5, 1); 
         }
-        .showcase-card.showcase-red .card-desc { color: #fff; }
+        .showcase-card.showcase-red .card-desc, .showcase-card.showcase-dark .card-desc { color: #fff; }
         .showcase-card:hover .card-desc { font-size: 1rem; }
 
         .tag { 
@@ -318,9 +320,10 @@
             font-family: var(--font-data);
             transition: background 0.3s, color 0.3s;
         }
-        .showcase-card.showcase-red .tag { border-color: #fff; color: #fff; }
+        .showcase-card.showcase-red .tag, .showcase-card.showcase-dark .tag { border-color: #fff; color: #fff; }
         .showcase-card:hover .tag { background: #000; color: #fff; }
         .showcase-card.showcase-red:hover .tag { background: #fff; color: #ff2a75; }
+        .showcase-card.showcase-dark:hover .tag { background: #fff; color: #1e1e24; }
 
         @keyframes fadeInUp {
             to { opacity: 1; transform: translateY(0); }
@@ -466,6 +469,18 @@
                         <div class="card-divider"></div>
                         <p class="card-desc">Bluff, blefe e manipulação política pelo poder total.</p>
                         <span class="tag">ESTRATÉGIA</span>
+                    </div>
+                </article>
+
+                <article class="showcase-card showcase-dark" data-game="impostor" data-title="IMPOSTOR">
+                    <div>
+                        <div class="card-top"><span class="card-badge">P-08</span><div class="sculpt-frame"><i class="fa-solid fa-user-ninja" style="color: #ffffff !important;"></i></div></div>
+                        <h2>IMPOSTOR</h2>
+                    </div>
+                    <div>
+                        <div class="card-divider"></div>
+                        <p class="card-desc">Descubra quem é o impostor disfarçado entre os inocentes.</p>
+                        <span class="tag">DEDUÇÃO</span>
                     </div>
                 </article>
             </div>
@@ -735,3 +750,4 @@
 </script>
 </body>
 </html>
+```[cite: 2]
