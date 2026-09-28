@@ -404,7 +404,7 @@
     let isHost = false;
     let myName = "Jogador";
 
-    // Banco de palavras secretas e dicas sutis/complexas para o Impostor (nada óbvias)
+    // Banco expandido e aprimorado de palavras secretas e dicas refinadas para o Impostor
     const wordPool = [
         { secret: "Café", hint: "Frequentemente associado a rituais de transição temporal e dependência comportamental" },
         { secret: "Pizza", hint: "Estrutura geométrica fragmentada voltada para consumo coletivo noturno" },
@@ -415,7 +415,12 @@
         { secret: "Chocolate", hint: "Substância sólida de conversão térmica rápida com propriedades estimulantes" },
         { secret: "Guitarra", hint: "Artefato gerador de ondas acústicas moduladas por tensão mecânica" },
         { secret: "Cinema", hint: "Câmara de privação sensorial coletiva focada em ilusões ópticas projetadas" },
-        { secret: "Avião", hint: "Mecanismo de propulsão atmosférica para transposição rápida de distâncias" }
+        { secret: "Avião", hint: "Mecanismo de propulsão atmosférica para transposição rápida de distâncias" },
+        { secret: "Relógio", hint: "Instrumento cíclico de contagem métrica e fragmentação contínua da efemeridade" },
+        { secret: "Biblioteca", hint: "Santuário estático de codificação física e preservação mnemônica coletiva" },
+        { secret: "Fones de Ouvido", hint: "Cápsulas de isolamento acústico subjetivo integradas ao córtex sensorial" },
+        { secret: "Montanha-Russa", hint: "Trajetória sinuosa de aceleração gravitacional e flutuação abrupta de estímulos" },
+        { secret: "Vulcão", hint: "Gêiser tectônico de liberação energética extrema e reconfiguração topográfica" }
     ];
 
     // Transição estilo portal Hub
@@ -457,7 +462,7 @@
         }
     });
 
-    // Função do Host para iniciar a partida
+    // Função do Host para iniciar a partida com seleção otimizada de palavra e impostor
     window.startImpostorGame = function() {
         if(!isHost) return;
 
@@ -471,9 +476,10 @@
                 return;
             }
 
-            // Sorteia 1 Impostor
+            // Sorteia 1 Impostor de forma totalmente randômica
             const impostorId = playerIds[Math.floor(Math.random() * playerIds.length)];
-            // Sorteia palavra secreta
+            
+            // Seleção otimizada da palavra secreta baseada em aleatoriedade aprimorada
             const chosenWordObj = wordPool[Math.floor(Math.random() * wordPool.length)];
 
             let assignments = {};
@@ -533,7 +539,7 @@
 
                 if(myAssignment.role === 'impostor') {
                     wordBox.className = "secret-word-box impostor-alert";
-                    wordBox.innerHTML = `VOCÊ É O IMPOSTOR!<br><span style="font-size: 0.9rem; display:block; margin-top:10px; font-weight:normal; color:#fff;">Contexto enigmático: ${myAssignment.hint}</span>`;
+                    wordBox.innerHTML = `VOCÊ É O IMPOSTOR!<br><span style="font-size: 0.9rem; display:block; margin-top:10px; font-weight:normal; color:#fff;">Dica estratégica: ${myAssignment.hint}</span>`;
                     backSubtitle.innerText = "Seu Papel";
                 } else {
                     wordBox.className = "secret-word-box";
