@@ -9,6 +9,16 @@
 { "secret": "Chocolate", "hint": "Doce que derrete" },
 { "secret": "Guitarra", "hint": "Som com cordas" },
 { "secret": "Cinema", "hint": "Pipoca e tela grande" },
-{ "secret": "Avião", "hint": "Voa alto" }
+{ "secret": "Avião", "hint": "Voa alto" },
+{ "secret": "Cachorro", "hint": "Melhor amigo do homem" },
+{ "secret": "Gato", "hint": "Miau e independência" },
+{ "secret": "Carro", "hint": "Quatro rodas na estrada" },
+{ "secret": "Computador", "hint": "Teclado e monitor" },
+{ "secret": "Cerveja", "hint": "Gelada no copo" },
+{ "secret": "Hambúrguer", "hint": "Pão e carne suculenta" },
+{ "secret": "Felipe", "hint": "Nome comum na roda" },
+{ "secret": "Viagem", "hint": "Malas prontas" },
+{ "secret": "Montanha", "hint": "Grande elevação de terra" },
+{ "secret": "Relógio", "hint": "Ponteiros e horas" }
 ]
 }
