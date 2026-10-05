@@ -117,26 +117,25 @@
 
         .card-brand { font-family: var(--font-mono); font-size: 1rem; font-weight: 700; align-self: flex-end; margin-top: auto; color: inherit; text-transform: uppercase; }
         
-        /* Texto integrado diretamente na carta com estilo máquina de escrever / carimbo */
+        /* Texto integrado diretamente na carta alterado para a fonte Syne (var(--font-display)) */
         .secret-word-content {
-            font-family: var(--font-data);
+            font-family: var(--font-display);
             font-size: clamp(1.5rem, 6vw, 2.3rem);
-            font-weight: 400;
+            font-weight: 800;
             color: #000000;
             margin: auto 0;
             word-break: break-word;
             overflow-wrap: break-word;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            line-height: 1.4;
-            text-shadow: 1px 1px 0px rgba(0,0,0,0.15);
+            letter-spacing: -0.5px;
+            line-height: 1.3;
         }
 
         .secret-word-content.impostor-alert {
             color: #ffffff;
             font-size: clamp(1.3rem, 5vw, 2rem);
             text-shadow: 2px 2px 0px #000000;
-            line-height: 1.5;
+            line-height: 1.4;
         }
 
         /* --- LISTAS E JOGADORES --- */
@@ -278,40 +277,40 @@
             border-color: #000;
         }
 
-        /* --- MODAL DE FASE / OVERLAY DE RESULTADO --- */
+        /* --- MODAL DE FASE / OVERLAY DE RESULTADO (Ajustado para responsividade) --- */
         .overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             width: 100dvw; height: 100dvh;
             background: rgba(0, 0, 0, 0.92); z-index: 1000;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
-            padding: 20px; text-align: center;
+            padding: 15px; text-align: center;
             overflow-y: auto;
         }
         .overlay.active { opacity: 1; pointer-events: auto; }
 
         .overlay-title {
             font-family: var(--font-display);
-            font-size: clamp(1.8rem, 7vw, 3rem); 
+            font-size: clamp(1.5rem, 6vw, 2.5rem); 
             font-weight: 800; 
             color: #ffd600;
             text-transform: uppercase; 
             letter-spacing: -1px; 
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             word-break: break-word;
         }
 
         .overlay-desc {
             font-family: var(--font-data); 
-            font-size: clamp(1rem, 4vw, 1.15rem); 
+            font-size: clamp(0.9rem, 3.5vw, 1.1rem); 
             color: #fff;
             background: #1e1e24;
             border: 4px solid #000;
-            padding: 20px;
+            padding: 15px 20px;
             width: 100%;
-            max-width: 440px; 
+            max-width: 420px; 
             margin-bottom: 20px; 
-            line-height: 1.5;
+            line-height: 1.4;
             text-transform: uppercase;
             box-shadow: 5px 5px 0px #ff2a75;
             word-break: break-word;
@@ -334,13 +333,13 @@
 <div class="noise"></div>
 <div class="ambilight-bg"></div>
 
-<!-- TELA DE RESULTADO / FIM DE JOGO -->
+<!-- TELA DE RESULTADO / FIM DE JOGO (Atualizada para reiniciar a partida) -->
 <div class="overlay" id="result-overlay">
     <div class="overlay-title" id="result-title">FIM DE JOGO</div>
     <div class="overlay-desc" id="result-desc">Carregando detalhes do resultado...</div>
     <div style="width: 100%; max-width: 300px;">
-        <button class="btn btn-blue" onclick="triggerPortalExit('index')">
-            <i class="fa-solid fa-house"></i> Voltar pro Hub
+        <button class="btn btn-blue" onclick="restartImpostorGame()">
+            <i class="fa-solid fa-rotate-right"></i> Reiniciar Partida
         </button>
     </div>
 </div>
@@ -375,7 +374,7 @@
                 </div>
                 <div class="flip-card-back">
                     <div style="font-size: 0.9rem; font-weight: 700; color: #000; text-transform: uppercase; font-family: var(--font-mono);" id="back-subtitle">Sua Palavra</div>
-                    <!-- Texto integrado diretamente na carta usando a fonte Special Elite (estilo máquina de escrever impressa) -->
+                    <!-- Texto integrado utilizando a fonte Syne -->
                     <div class="secret-word-content" id="secret-word-display">...</div>
                     <div class="card-brand">IMPOSTOR</div>
                 </div>
@@ -431,6 +430,7 @@
     let isHost = false;
     let myName = "Jogador";
 
+    // Banco de palavras carregado externamente via palavras.json
     let wordPool = [];
 
     async function loadWordPool() {
@@ -440,9 +440,10 @@
             wordPool = data.words || [];
         } catch (error) {
             console.error("Erro ao carregar palavras.json:", error);
+            // Fallback caso ocorra falha de fetch
             wordPool = [
-                { secret: "Café", hint: "Amargo" },
-                { secret: "Pizza", hint: "Gordurosa" }
+                { secret: "Café", hint: "Ritual matinal" },
+                { secret: "Pizza", hint: "Fatias em círculo" }
             ];
         }
     }
@@ -499,30 +500,13 @@
         }
     });
 
-    // Função do Host para iniciar a partida (Sorteia sem repetir palavras na sala)
+    // Função do Host para iniciar a partida
     window.startImpostorGame = async function() {
         if(!isHost) return;
 
         if(wordPool.length === 0) {
             await loadWordPool();
         }
-
-        const roomSnap = await get(roomRef);
-        const roomData = roomSnap.val() || {};
-        let usedWords = roomData.impostor?.usedWords || [];
-
-        // Filtra apenas palavras que ainda não foram usadas nesta sala
-        let availableWords = wordPool.filter(w => !usedWords.includes(w.secret));
-
-        // Se todas já foram usadas, reseta o histórico para recomeçar o ciclo
-        if(availableWords.length === 0) {
-            usedWords = [];
-            availableWords = wordPool;
-        }
-
-        // Sorteia uma palavra do conjunto disponível
-        const chosenWordObj = availableWords[Math.floor(Math.random() * availableWords.length)];
-        usedWords.push(chosenWordObj.secret);
 
         get(ref(db, `rooms/${roomCode}/players`)).then(snap => {
             if(!snap.exists()) return;
@@ -536,6 +520,8 @@
 
             // Sorteia 1 Impostor
             const impostorId = playerIds[Math.floor(Math.random() * playerIds.length)];
+            // Sorteia palavra secreta do banco JSON
+            const chosenWordObj = wordPool[Math.floor(Math.random() * wordPool.length)] || { secret: "Exemplo", hint: "Dica padrão" };
 
             let assignments = {};
             playerIds.forEach(pId => {
@@ -546,14 +532,24 @@
                 };
             });
 
-            update(impostorRef, {
+            set(impostorRef, {
                 status: 'playing',
                 assignments: assignments,
                 impostorId: impostorId,
-                votes: {},
-                usedWords: usedWords // Salva o histórico de palavras usadas na sala
+                votes: {}
             });
         });
+    };
+
+    // Função do Host para reiniciar a partida (substitui o retorno ao Hub)
+    window.restartImpostorGame = function() {
+        if(!isHost) {
+            alert("Apenas o anfitrião pode reiniciar a partida.");
+            return;
+        }
+        // Remove a classe do overlay e chama o início de um novo jogo
+        document.getElementById('result-overlay').classList.remove('active');
+        startImpostorGame();
     };
 
     // Host abre a fase de votação
@@ -584,9 +580,15 @@
         const lobbyPanel = document.getElementById('lobby-panel');
         const gamePanel = document.getElementById('game-panel');
         const votingPanel = document.getElementById('voting-panel');
+        const overlay = document.getElementById('result-overlay');
 
         if(data.status === 'playing' || data.status === 'voting') {
             lobbyPanel.style.display = 'none';
+            overlay.classList.remove('active'); // Oculta o overlay caso estivesse aberto
+
+            // Garante que a carta inicie desvirada em uma nova partida
+            const flipCard = document.getElementById('flip-card');
+            if(flipCard) flipCard.classList.remove('flipped');
 
             if(data.assignments && data.assignments[myId]) {
                 const myAssignment = data.assignments[myId];
@@ -605,6 +607,8 @@
 
                 if(isHost && data.status === 'playing') {
                     document.getElementById('host-voting-action').style.display = 'block';
+                } else {
+                    document.getElementById('host-voting-action').style.display = 'none';
                 }
             }
 
@@ -698,6 +702,9 @@
 
     function startConfettiAnimation() {
         const overlay = document.getElementById('result-overlay');
+        // Remove confetes antigos para evitar acumular múltiplos loops
+        overlay.querySelectorAll('.confetti').forEach(c => c.remove());
+
         const colors = ['#ffd600', '#ff2a75', '#00bfff', '#00ff66', '#b19cd9'];
         for (let i = 0; i < 90; i++) {
             const confetti = document.createElement('div');
