@@ -101,6 +101,8 @@
             border: 4px solid #000000;
             box-shadow: 8px 8px 0px #000000;
             overflow: hidden;
+            /* Padronizando a fonte de todos os textos internos da carta para Syne */
+            font-family: var(--font-display);
         }
 
         .flip-card-front {
@@ -115,9 +117,9 @@
             overflow-y: auto;
         }
 
-        .card-brand { font-family: var(--font-mono); font-size: 1rem; font-weight: 700; align-self: flex-end; margin-top: auto; color: inherit; text-transform: uppercase; }
+        .card-brand { font-family: var(--font-display); font-size: 1rem; font-weight: 800; align-self: flex-end; margin-top: auto; color: inherit; text-transform: uppercase; letter-spacing: -0.5px; }
         
-        /* Texto integrado diretamente na carta alterado para a fonte Syne (var(--font-display)) */
+        /* Texto integrado diretamente na carta usando a fonte Syne (var(--font-display)) */
         .secret-word-content {
             font-family: var(--font-display);
             font-size: clamp(1.5rem, 6vw, 2.3rem);
@@ -277,7 +279,7 @@
             border-color: #000;
         }
 
-        /* --- MODAL DE FASE / OVERLAY DE RESULTADO (Ajustado para responsividade) --- */
+        /* --- MODAL DE FASE / OVERLAY DE RESULTADO --- */
         .overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             width: 100dvw; height: 100dvh;
@@ -333,7 +335,7 @@
 <div class="noise"></div>
 <div class="ambilight-bg"></div>
 
-<!-- TELA DE RESULTADO / FIM DE JOGO (Atualizada para reiniciar a partida) -->
+<!-- TELA DE RESULTADO / FIM DE JOGO -->
 <div class="overlay" id="result-overlay">
     <div class="overlay-title" id="result-title">FIM DE JOGO</div>
     <div class="overlay-desc" id="result-desc">Carregando detalhes do resultado...</div>
@@ -368,12 +370,12 @@
         <div class="flip-card-container" id="flip-card" onclick="toggleCardFlip()">
             <div class="flip-card-inner">
                 <div class="flip-card-front">
-                    <div style="font-size: 1rem; letter-spacing: 1px; font-weight: 700; font-family: var(--font-mono);">TOQUE PARA VIRAR</div>
+                    <div style="font-size: 1rem; letter-spacing: -0.5px; font-weight: 800;">TOQUE PARA VIRAR</div>
                     <div style="font-size: 5rem; margin: auto;"><i class="fa-solid fa-mask"></i></div>
                     <div class="card-brand">IMPOSTOR</div>
                 </div>
                 <div class="flip-card-back">
-                    <div style="font-size: 0.9rem; font-weight: 700; color: #000; text-transform: uppercase; font-family: var(--font-mono);" id="back-subtitle">Sua Palavra</div>
+                    <div style="font-size: 0.9rem; font-weight: 800; color: #000; text-transform: uppercase; letter-spacing: -0.5px;" id="back-subtitle">Sua Palavra</div>
                     <!-- Texto integrado utilizando a fonte Syne -->
                     <div class="secret-word-content" id="secret-word-display">...</div>
                     <div class="card-brand">IMPOSTOR</div>
@@ -541,13 +543,12 @@
         });
     };
 
-    // Função do Host para reiniciar a partida (substitui o retorno ao Hub)
+    // Função do Host para reiniciar a partida
     window.restartImpostorGame = function() {
         if(!isHost) {
             alert("Apenas o anfitrião pode reiniciar a partida.");
             return;
         }
-        // Remove a classe do overlay e chama o início de um novo jogo
         document.getElementById('result-overlay').classList.remove('active');
         startImpostorGame();
     };
@@ -584,9 +585,8 @@
 
         if(data.status === 'playing' || data.status === 'voting') {
             lobbyPanel.style.display = 'none';
-            overlay.classList.remove('active'); // Oculta o overlay caso estivesse aberto
+            overlay.classList.remove('active');
 
-            // Garante que a carta inicie desvirada em uma nova partida
             const flipCard = document.getElementById('flip-card');
             if(flipCard) flipCard.classList.remove('flipped');
 
@@ -597,7 +597,7 @@
 
                 if(myAssignment.role === 'impostor') {
                     wordBox.className = "secret-word-content impostor-alert";
-                    wordBox.innerHTML = `VOCÊ É O IMPOSTOR!<br><span style="font-size: 1rem; display:block; margin-top:10px; font-weight:normal; color:#fff; font-family:var(--font-data);">Dica: ${myAssignment.hint}</span>`;
+                    wordBox.innerHTML = `VOCÊ É O IMPOSTOR!<br><span style="font-size: 1rem; display:block; margin-top:10px; font-weight:normal; color:#fff; font-family:var(--font-display);">Dica: ${myAssignment.hint}</span>`;
                     backSubtitle.innerText = "Seu Papel";
                 } else {
                     wordBox.className = "secret-word-content";
@@ -619,14 +619,13 @@
                 gamePanel.style.display = 'none';
                 votingPanel.style.display = 'block';
 
-                // Renderizar lista de votação com todos os jogadores
                 get(ref(db, `rooms/${roomCode}/players`)).then(pSnap => {
                     if(pSnap.exists()) {
                         const players = pSnap.val();
                         const vList = document.getElementById('voting-players-list');
                         vList.innerHTML = '';
                         Object.keys(players).forEach(pId => {
-                            if(pId === myId) return; // Não vota em si mesmo
+                            if(pId === myId) return;
                             const p = players[pId];
                             const btn = document.createElement('button');
                             btn.className = 'vote-btn';
@@ -702,7 +701,6 @@
 
     function startConfettiAnimation() {
         const overlay = document.getElementById('result-overlay');
-        // Remove confetes antigos para evitar acumular múltiplos loops
         overlay.querySelectorAll('.confetti').forEach(c => c.remove());
 
         const colors = ['#ffd600', '#ff2a75', '#00bfff', '#00ff66', '#b19cd9'];
