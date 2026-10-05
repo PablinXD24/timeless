@@ -431,7 +431,6 @@
     let isHost = false;
     let myName = "Jogador";
 
-    // Banco de palavras carregado externamente via palavras.json
     let wordPool = [];
 
     async function loadWordPool() {
@@ -441,10 +440,9 @@
             wordPool = data.words || [];
         } catch (error) {
             console.error("Erro ao carregar palavras.json:", error);
-            // Fallback caso ocorra falha de fetch
             wordPool = [
-                { secret: "Café", hint: "Ritual matinal" },
-                { secret: "Pizza", hint: "Fatias em círculo" }
+                { secret: "Café", hint: "Amargo" },
+                { secret: "Pizza", hint: "Gordurosa" }
             ];
         }
     }
@@ -501,13 +499,30 @@
         }
     });
 
-    // Função do Host para iniciar a partida
+    // Função do Host para iniciar a partida (Sorteia sem repetir palavras na sala)
     window.startImpostorGame = async function() {
         if(!isHost) return;
 
         if(wordPool.length === 0) {
             await loadWordPool();
         }
+
+        const roomSnap = await get(roomRef);
+        const roomData = roomSnap.val() || {};
+        let usedWords = roomData.impostor?.usedWords || [];
+
+        // Filtra apenas palavras que ainda não foram usadas nesta sala
+        let availableWords = wordPool.filter(w => !usedWords.includes(w.secret));
+
+        // Se todas já foram usadas, reseta o histórico para recomeçar o ciclo
+        if(availableWords.length === 0) {
+            usedWords = [];
+            availableWords = wordPool;
+        }
+
+        // Sorteia uma palavra do conjunto disponível
+        const chosenWordObj = availableWords[Math.floor(Math.random() * availableWords.length)];
+        usedWords.push(chosenWordObj.secret);
 
         get(ref(db, `rooms/${roomCode}/players`)).then(snap => {
             if(!snap.exists()) return;
@@ -521,8 +536,6 @@
 
             // Sorteia 1 Impostor
             const impostorId = playerIds[Math.floor(Math.random() * playerIds.length)];
-            // Sorteia palavra secreta do banco JSON
-            const chosenWordObj = wordPool[Math.floor(Math.random() * wordPool.length)] || { secret: "Exemplo", hint: "Dica padrão" };
 
             let assignments = {};
             playerIds.forEach(pId => {
@@ -533,11 +546,12 @@
                 };
             });
 
-            set(impostorRef, {
+            update(impostorRef, {
                 status: 'playing',
                 assignments: assignments,
                 impostorId: impostorId,
-                votes: {}
+                votes: {},
+                usedWords: usedWords // Salva o histórico de palavras usadas na sala
             });
         });
     };
