@@ -1,360 +1,701 @@
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Syne:wght@700;800&family=VT323&display=swap" rel="stylesheet">
-
-<style>
-    :root {
-        --font-display: 'Syne', sans-serif;
-        --font-data: 'Special Elite', cursive, monospace;
-        --font-mono: 'VT323', monospace;
-        --card-radius: 20px;
-    }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-    body {
-        background-color: #000000;
-        color: #000000;
-        height: 100vh; 
-        height: 100dvh;
-        width: 100vw;
-        font-family: var(--font-data);
-        display: flex; 
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-        position: relative;
-        transition: transform 0.6s cubic-bezier(0.7, 0, 0.3, 1), opacity 0.4s ease;
-    }
-
-    /* --- EFEITO PORTAL FECHANDO (CINEMÁTICO ARANHAVERSO) --- */
-    body.portal-closing {
-        transform: scaleY(0.005) scaleX(1.2);
-        opacity: 0;
-        background-color: #000000 !important;
-        filter: brightness(3) contrast(2);
-    }
-
-    .noise, .ambilight-bg { 
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-        z-index: 0; opacity: 0.15; 
-        background: repeating-linear-gradient(45deg, #222, #222 1px, transparent 1px, transparent 10px); 
-        pointer-events: none; 
-    }
-
-    .container {
-        position: relative;
-        width: 100%;
-        max-width: 520px;
-        z-index: 10;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 15px;
-        margin: 0 auto;
-        height: 100%;
-    }
-
-    /* --- ESTÉTICA DE CARTA SKETCH COM FLIP (TELA INTEIRA) --- */
-    .flip-card-container {
-        perspective: 1000px;
-        width: 100%;
-        max-width: 440px;
-        height: 85vh;
-        max-height: 650px;
-        margin: 0 auto;
-        cursor: pointer;
-    }
-
-    .flip-card-inner {
-        position: relative;
-        width: 100%;
-        height: 100%;
-        text-align: center;
-        transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        transform-style: preserve-3d;
-    }
-
-    .flip-card-container.flipped .flip-card-inner {
-        transform: rotateY(180deg);
-    }
-
-    .flip-card-front, .flip-card-back {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        backface-visibility: hidden;
-        -webkit-backface-visibility: hidden;
-        border-radius: var(--card-radius);
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        padding: 40px 30px;
-        border: 4px solid #000000;
-        box-shadow: 8px 8px 0px #000000;
-        overflow: hidden;
-    }
-
-    .flip-card-front {
-        background: #ff2a75;
-        color: #fff;
-    }
-
-    .flip-card-back {
-        background: #ffd600;
-        color: #000000;
-        transform: rotateY(180deg);
-        overflow-y: auto;
-    }
-
-    .card-brand { font-family: var(--font-mono); font-size: 1rem; font-weight: 700; align-self: flex-end; margin-top: auto; color: inherit; text-transform: uppercase; }
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>IMPOSTOR - Jogo dos Inocentes</title>
     
-    /* Texto integrado diretamente na carta com estilo máquina de escrever / carimbo */
-    .secret-word-content {
-        font-family: var(--font-data);
-        font-size: clamp(1.5rem, 6vw, 2.3rem);
-        font-weight: 400;
-        color: #000000;
-        margin: auto 0;
-        word-break: break-word;
-        overflow-wrap: break-word;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        line-height: 1.4;
-        text-shadow: 1px 1px 0px rgba(0,0,0,0.15);
-    }
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Syne:wght@700;800&family=VT323&display=swap" rel="stylesheet">
 
-    .secret-word-content.impostor-alert {
-        color: #ffffff;
-        font-size: clamp(1.3rem, 5vw, 2rem);
-        text-shadow: 2px 2px 0px #000000;
-        line-height: 1.5;
-    }
+    <style>
+        :root {
+            --font-display: 'Syne', sans-serif;
+            --font-data: 'Special Elite', cursive, monospace;
+            --font-mono: 'VT323', monospace;
+            --card-radius: 20px;
+        }
 
-    /* --- LISTAS E JOGADORES --- */
-    .players-list {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        max-height: 280px;
-        overflow-y: auto;
-        padding-right: 4px;
-        margin-bottom: 15px;
-        width: 100%;
-    }
-    .players-list::-webkit-scrollbar { width: 5px; }
-    .players-list::-webkit-scrollbar-thumb { background: #000000; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-    .player-row {
-        background: #f0f0f0;
-        border: 3px solid #000000;
-        padding: 12px 15px;
-        border-radius: 0px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-weight: 700;
-        font-size: clamp(0.9rem, 3.5vw, 1rem);
-        color: #000000;
-        box-shadow: 3px 3px 0px #000000;
-        text-transform: uppercase;
-        font-family: var(--font-data);
-        word-break: break-word;
-        text-align: left;
-    }
+        body {
+            background-color: #000000;
+            color: #000000;
+            height: 100vh; 
+            height: 100dvh;
+            width: 100vw;
+            font-family: var(--font-data);
+            display: flex; 
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            transition: transform 0.6s cubic-bezier(0.7, 0, 0.3, 1), opacity 0.4s ease;
+        }
 
-    /* --- PAINÉIS / CARDS ESTILO HUB --- */
-    .glass-card {
-        width: 100%;
-        max-width: 440px;
-        background: #ffffff;
-        border: 4px solid #000000;
-        border-radius: 0px;
-        padding: 20px;
-        box-shadow: 6px 6px 0px #000000;
-        text-align: center;
-        color: #000000;
-    }
+        /* --- EFEITO PORTAL FECHANDO (CINEMÁTICO ARANHAVERSO) --- */
+        body.portal-closing {
+            transform: scaleY(0.005) scaleX(1.2);
+            opacity: 0;
+            background-color: #000000 !important;
+            filter: brightness(3) contrast(2);
+        }
 
-    .card-title {
-        font-family: var(--font-display);
-        font-size: clamp(1.2rem, 5vw, 1.5rem);
-        font-weight: 800;
-        color: #000000;
-        margin-bottom: 14px;
-        text-transform: uppercase;
-        letter-spacing: -0.5px;
-        word-break: break-word;
-    }
+        .noise, .ambilight-bg { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            z-index: 0; opacity: 0.15; 
+            background: repeating-linear-gradient(45deg, #222, #222 1px, transparent 1px, transparent 10px); 
+            pointer-events: none; 
+        }
 
-    .desc-text {
-        font-family: var(--font-data);
-        font-size: clamp(0.9rem, 3.5vw, 1rem);
-        color: #000;
-        font-weight: 700;
-        line-height: 1.4;
-        margin-bottom: 15px;
-        text-transform: uppercase;
-        text-align: center;
-        width: 100%;
-        word-break: break-word;
-    }
+        .container {
+            position: relative;
+            width: 100%;
+            max-width: 520px;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            margin: 0 auto;
+            height: 100%;
+        }
 
-    /* --- BOTÕES LÍQUIDOS ESTILO HUB --- */
-    .btn {
-        background: #ffd600; 
-        color: #000000; 
-        border: 4px solid #000000; 
-        padding: 15px; 
-        border-radius: 0px; 
-        font-weight: 800; 
-        font-size: clamp(1rem, 4vw, 1.15rem); 
-        font-family: var(--font-display); 
-        width: 100%; 
-        cursor: pointer; 
-        box-shadow: 5px 5px 0px #000000; 
-        transition: 0.2s ease; 
-        text-transform: uppercase; 
-        display: flex; 
-        align-items: center; 
-        justify-content: center; 
-        gap: 8px;
-        text-align: center;
-        word-break: break-word;
-    }
-    .btn:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0px #000000; background: #adff2f; }
-    .btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px #000000; }
-    
-    .btn-blue { 
-        background: #00bfff;
-        color: #000000;
-    }
-    .btn-blue:hover { background: #adff2f; }
+        /* --- ESTÉTICA DE CARTA SKETCH COM FLIP (TELA INTEIRA) --- */
+        .flip-card-container {
+            perspective: 1000px;
+            width: 100%;
+            max-width: 440px;
+            height: 85vh;
+            max-height: 650px;
+            margin: 0 auto;
+            cursor: pointer;
+        }
 
-    .btn-green { 
-        background: #00ff66; 
-        color: #000000;
-    }
-    .btn-green:hover { background: #adff2f; }
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+        }
 
-    /* Votação */
-    .vote-btn {
-        background: #ffffff;
-        color: #000000; 
-        border: 3px solid #000000;
-        padding: 14px 16px; 
-        border-radius: 0px; 
-        font-weight: 700; 
-        font-size: clamp(0.9rem, 3.5vw, 1rem);
-        width: 100%; 
-        cursor: pointer; 
-        transition: 0.2s; 
-        text-transform: uppercase;
-        display: flex; 
-        justify-content: space-between; 
-        align-items: center;
-        box-shadow: 3px 3px 0px #000000;
-        font-family: var(--font-data);
-        text-align: left;
-        word-break: break-word;
-    }
-    .vote-btn:hover {
-        background: #ff2a75;
-        color: #fff;
-        transform: translate(-2px, -2px);
-        box-shadow: 5px 5px 0px #000000;
-    }
-    .vote-btn.voted {
-        background: #00ff66;
-        color: #000;
-        border-color: #000;
-    }
+        .flip-card-container.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
 
-    /* --- MODAL DE FASE / OVERLAY DE RESULTADO --- */
-    .overlay {
-        position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-        width: 100dvw; height: 100dvh;
-        background: rgba(0, 0, 0, 0.92); z-index: 1000;
-        display: flex; flex-direction: column; justify-content: center; align-items: center;
-        opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
-        padding: 20px; text-align: center;
-        overflow-y: auto;
-    }
-    .overlay.active { opacity: 1; pointer-events: auto; }
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            border-radius: var(--card-radius);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 40px 30px;
+            border: 4px solid #000000;
+            box-shadow: 8px 8px 0px #000000;
+            overflow: hidden;
+        }
 
-    .overlay-title {
-        font-family: var(--font-display);
-        font-size: clamp(1.8rem, 7vw, 3rem); 
-        font-weight: 800; 
-        color: #ffd600;
-        text-transform: uppercase; 
-        letter-spacing: -1px; 
-        margin-bottom: 12px;
-        word-break: break-word;
-    }
+        .flip-card-front {
+            background: #ff2a75;
+            color: #fff;
+        }
 
-    .overlay-desc {
-        font-family: var(--font-data); 
-        font-size: clamp(1rem, 4vw, 1.15rem); 
-        color: #fff;
-        background: #1e1e24;
-        border: 4px solid #000;
-        padding: 20px;
-        width: 100%;
-        max-width: 440px; 
-        margin-bottom: 20px; 
-        line-height: 1.5;
-        text-transform: uppercase;
-        box-shadow: 5px 5px 0px #ff2a75;
-        word-break: break-word;
-    }
+        .flip-card-back {
+            background: #ffd600;
+            color: #000000;
+            transform: rotateY(180deg);
+            overflow-y: auto;
+        }
 
-    .confetti {
-        position: absolute; width: 10px; height: 10px; opacity: 0.9;
-        border: 2px solid #000;
-        animation: fall linear infinite;
-    }
-    @keyframes fall {
-        0% { transform: translateY(-5vh) translateX(0) scale(0.8); top: 0; }
-        50% { transform: translateY(50vh) translateX(25px) scale(1.1); top: 0; }
-        100% { transform: translateY(105vh) translateX(-25px) scale(0.8); top: 0; }
-    }
-</style>
+        .card-brand { font-family: var(--font-mono); font-size: 1rem; font-weight: 700; align-self: flex-end; margin-top: auto; color: inherit; text-transform: uppercase; }
+        
+        /* Texto integrado diretamente na carta com estilo máquina de escrever / carimbo */
+        .secret-word-content {
+            font-family: var(--font-data);
+            font-size: clamp(1.5rem, 6vw, 2.3rem);
+            font-weight: 400;
+            color: #000000;
+            margin: auto 0;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            line-height: 1.4;
+            text-shadow: 1px 1px 0px rgba(0,0,0,0.15);
+        }
 
+        .secret-word-content.impostor-alert {
+            color: #ffffff;
+            font-size: clamp(1.3rem, 5vw, 2rem);
+            text-shadow: 2px 2px 0px #000000;
+            line-height: 1.5;
+        }
 
-<!-- PAINEL 2: FASE DE REVELAÇÃO DA PALAVRA / DISCUSSÃO -->
-<div id="game-panel" style="display: none; width: 100%; flex-direction: column; align-items: center; justify-content: center;">
-    
-    <!-- CARTA COM FLIP (ESTÉTICA SKETCH) -->
-    <div class="flip-card-container" id="flip-card" onclick="toggleCardFlip()">
-        <div class="flip-card-inner">
-            <div class="flip-card-front">
-                <div style="font-size: 1rem; letter-spacing: 1px; font-weight: 700; font-family: var(--font-mono);">TOQUE PARA VIRAR</div>
-                <div style="font-size: 5rem; margin: auto;"><i class="fa-solid fa-mask"></i></div>
-                <div class="card-brand">IMPOSTOR</div>
-            </div>
-            <div class="flip-card-back">
-                <div style="font-size: 0.9rem; font-weight: 700; color: #000; text-transform: uppercase; font-family: var(--font-mono);" id="back-subtitle">Sua Palavra</div>
-                <!-- Texto integrado diretamente na carta usando a fonte Special Elite (estilo máquina de escrever impressa) -->
-                <div class="secret-word-content" id="secret-word-display">...</div>
-                <div class="card-brand">IMPOSTOR</div>
-            </div>
-        </div>
-    </div>
+        /* --- LISTAS E JOGADORES --- */
+        .players-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 280px;
+            overflow-y: auto;
+            padding-right: 4px;
+            margin-bottom: 15px;
+            width: 100%;
+        }
+        .players-list::-webkit-scrollbar { width: 5px; }
+        .players-list::-webkit-scrollbar-thumb { background: #000000; }
 
-    <div id="host-voting-action" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; z-index: 100;">
-        <button class="btn btn-green" onclick="goToVotingPhase()">
-            <i class="fa-solid fa-gavel"></i> ABRIR VOTAÇÃO
+        .player-row {
+            background: #f0f0f0;
+            border: 3px solid #000000;
+            padding: 12px 15px;
+            border-radius: 0px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 700;
+            font-size: clamp(0.9rem, 3.5vw, 1rem);
+            color: #000000;
+            box-shadow: 3px 3px 0px #000000;
+            text-transform: uppercase;
+            font-family: var(--font-data);
+            word-break: break-word;
+            text-align: left;
+        }
+
+        /* --- PAINÉIS / CARDS ESTILO HUB --- */
+        .glass-card {
+            width: 100%;
+            max-width: 440px;
+            background: #ffffff;
+            border: 4px solid #000000;
+            border-radius: 0px;
+            padding: 20px;
+            box-shadow: 6px 6px 0px #000000;
+            text-align: center;
+            color: #000000;
+        }
+
+        .card-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.2rem, 5vw, 1.5rem);
+            font-weight: 800;
+            color: #000000;
+            margin-bottom: 14px;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+            word-break: break-word;
+        }
+
+        .desc-text {
+            font-family: var(--font-data);
+            font-size: clamp(0.9rem, 3.5vw, 1rem);
+            color: #000;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            text-align: center;
+            width: 100%;
+            word-break: break-word;
+        }
+
+        /* --- BOTÕES LÍQUIDOS ESTILO HUB --- */
+        .btn {
+            background: #ffd600; 
+            color: #000000; 
+            border: 4px solid #000000; 
+            padding: 15px; 
+            border-radius: 0px; 
+            font-weight: 800; 
+            font-size: clamp(1rem, 4vw, 1.15rem); 
+            font-family: var(--font-display); 
+            width: 100%; 
+            cursor: pointer; 
+            box-shadow: 5px 5px 0px #000000; 
+            transition: 0.2s ease; 
+            text-transform: uppercase; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 8px;
+            text-align: center;
+            word-break: break-word;
+        }
+        .btn:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0px #000000; background: #adff2f; }
+        .btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px #000000; }
+        
+        .btn-blue { 
+            background: #00bfff;
+            color: #000000;
+        }
+        .btn-blue:hover { background: #adff2f; }
+
+        .btn-green { 
+            background: #00ff66; 
+            color: #000000;
+        }
+        .btn-green:hover { background: #adff2f; }
+
+        /* Votação */
+        .vote-btn {
+            background: #ffffff;
+            color: #000000; 
+            border: 3px solid #000000;
+            padding: 14px 16px; 
+            border-radius: 0px; 
+            font-weight: 700; 
+            font-size: clamp(0.9rem, 3.5vw, 1rem);
+            width: 100%; 
+            cursor: pointer; 
+            transition: 0.2s; 
+            text-transform: uppercase;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            box-shadow: 3px 3px 0px #000000;
+            font-family: var(--font-data);
+            text-align: left;
+            word-break: break-word;
+        }
+        .vote-btn:hover {
+            background: #ff2a75;
+            color: #fff;
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0px #000000;
+        }
+        .vote-btn.voted {
+            background: #00ff66;
+            color: #000;
+            border-color: #000;
+        }
+
+        /* --- MODAL DE FASE / OVERLAY DE RESULTADO --- */
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            width: 100dvw; height: 100dvh;
+            background: rgba(0, 0, 0, 0.92); z-index: 1000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
+            padding: 20px; text-align: center;
+            overflow-y: auto;
+        }
+        .overlay.active { opacity: 1; pointer-events: auto; }
+
+        .overlay-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 7vw, 3rem); 
+            font-weight: 800; 
+            color: #ffd600;
+            text-transform: uppercase; 
+            letter-spacing: -1px; 
+            margin-bottom: 12px;
+            word-break: break-word;
+        }
+
+        .overlay-desc {
+            font-family: var(--font-data); 
+            font-size: clamp(1rem, 4vw, 1.15rem); 
+            color: #fff;
+            background: #1e1e24;
+            border: 4px solid #000;
+            padding: 20px;
+            width: 100%;
+            max-width: 440px; 
+            margin-bottom: 20px; 
+            line-height: 1.5;
+            text-transform: uppercase;
+            box-shadow: 5px 5px 0px #ff2a75;
+            word-break: break-word;
+        }
+
+        .confetti {
+            position: absolute; width: 10px; height: 10px; opacity: 0.9;
+            border: 2px solid #000;
+            animation: fall linear infinite;
+        }
+        @keyframes fall {
+            0% { transform: translateY(-5vh) translateX(0) scale(0.8); top: 0; }
+            50% { transform: translateY(50vh) translateX(25px) scale(1.1); top: 0; }
+            100% { transform: translateY(105vh) translateX(-25px) scale(0.8); top: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="noise"></div>
+<div class="ambilight-bg"></div>
+
+<!-- TELA DE RESULTADO / FIM DE JOGO -->
+<div class="overlay" id="result-overlay">
+    <div class="overlay-title" id="result-title">FIM DE JOGO</div>
+    <div class="overlay-desc" id="result-desc">Carregando detalhes do resultado...</div>
+    <div style="width: 100%; max-width: 300px;">
+        <button class="btn btn-blue" onclick="triggerPortalExit('index')">
+            <i class="fa-solid fa-house"></i> Voltar pro Hub
         </button>
     </div>
 </div>
 
-<!-- PAINEL 3: FASE DE VOTAÇÃO -->
-<div class="glass-card" id="voting-panel" style="display: none;">
-    <div class="card-title"><i class="fa-solid fa-vote-yea"></i> Hora de Votar no Impostor!</div>
-    <div class="desc-text" style="margin-bottom: 12px;">Quem você acha que é o impostor que não sabia a palavra?</div>
-    <div class="players-list" id="voting-players-list">
-        <!-- Gerado via JS -->
+<div class="container">
+    <!-- PAINEL 1: LOBBY / AGUARDANDO -->
+    <div class="glass-card" id="lobby-panel">
+        <div class="card-title"><i class="fa-solid fa-users"></i> Jogadores na Sala</div>
+        <div class="players-list" id="lobby-players-list">
+            <div style="color: #666; font-size: 0.95rem; font-weight: 700;">Carregando participantes...</div>
+        </div>
+        <div id="host-start-container" style="display: none; margin-top: 15px; width: 100%;">
+            <button class="btn" onclick="startImpostorGame()">
+                <i class="fa-solid fa-play"></i> INICIAR PARTIDA
+            </button>
+        </div>
+        <div id="guest-waiting-container" style="color: #000; font-weight: 700; font-size: 0.9rem; margin-top: 10px; text-transform: uppercase;">
+            Aguardando o anfitrião iniciar o jogo...
+        </div>
+    </div>
+
+    <!-- PAINEL 2: FASE DE REVELAÇÃO DA PALAVRA / DISCUSSÃO -->
+    <div id="game-panel" style="display: none; width: 100%; flex-direction: column; align-items: center; justify-content: center;">
+        
+        <!-- CARTA COM FLIP (ESTÉTICA SKETCH) -->
+        <div class="flip-card-container" id="flip-card" onclick="toggleCardFlip()">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <div style="font-size: 1rem; letter-spacing: 1px; font-weight: 700; font-family: var(--font-mono);">TOQUE PARA VIRAR</div>
+                    <div style="font-size: 5rem; margin: auto;"><i class="fa-solid fa-mask"></i></div>
+                    <div class="card-brand">IMPOSTOR</div>
+                </div>
+                <div class="flip-card-back">
+                    <div style="font-size: 0.9rem; font-weight: 700; color: #000; text-transform: uppercase; font-family: var(--font-mono);" id="back-subtitle">Sua Palavra</div>
+                    <!-- Texto integrado diretamente na carta usando a fonte Special Elite (estilo máquina de escrever impressa) -->
+                    <div class="secret-word-content" id="secret-word-display">...</div>
+                    <div class="card-brand">IMPOSTOR</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="host-voting-action" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; z-index: 100;">
+            <button class="btn btn-green" onclick="goToVotingPhase()">
+                <i class="fa-solid fa-gavel"></i> ABRIR VOTAÇÃO
+            </button>
+        </div>
+    </div>
+
+    <!-- PAINEL 3: FASE DE VOTAÇÃO -->
+    <div class="glass-card" id="voting-panel" style="display: none;">
+        <div class="card-title"><i class="fa-solid fa-vote-yea"></i> Hora de Votar no Impostor!</div>
+        <div class="desc-text" style="margin-bottom: 12px;">Quem você acha que é o impostor que não sabia a palavra?</div>
+        <div class="players-list" id="voting-players-list">
+            <!-- Gerado via JS -->
+        </div>
     </div>
 </div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, onValue, update, get, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyB1buacNarLY8ELWla6yeqTi4L0vTdloSc",
+        authDomain: "wrapped-fad94.firebaseapp.com",
+        databaseURL: "https://wrapped-fad94-default-rtdb.firebaseio.com",
+        projectId: "wrapped-fad94",
+        storageBucket: "wrapped-fad94.firebasestorage.app",
+        messagingSenderId: "360236097664",
+        appId: "1:360236097664:web:76777f529c18623bf1c665"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const roomCode = urlParams.get('room');
+    const myId = localStorage.getItem('wrapped_uid');
+
+    if(!roomCode || !myId) {
+        alert("Sala ou identificação não encontrada! Volte ao Menu.");
+        window.location.href = "index.html";
+    }
+
+    const roomRef = ref(db, `rooms/${roomCode}`);
+    const impostorRef = ref(db, `rooms/${roomCode}/impostor`);
+    
+    let isHost = false;
+    let myName = "Jogador";
+
+    // Banco de palavras carregado externamente via palavras.json
+    let wordPool = [];
+
+    async function loadWordPool() {
+        try {
+            const response = await fetch('palavras.json');
+            const data = await response.json();
+            wordPool = data.words || [];
+        } catch (error) {
+            console.error("Erro ao carregar palavras.json:", error);
+            // Fallback caso ocorra falha de fetch
+            wordPool = [
+                { secret: "Café", hint: "Ritual matinal" },
+                { secret: "Pizza", hint: "Fatias em círculo" }
+            ];
+        }
+    }
+
+    loadWordPool();
+
+    // Transição estilo portal Hub
+    window.triggerPortalExit = function(targetFile) {
+        document.body.classList.add('portal-closing');
+        setTimeout(() => { window.location.href = `${targetFile}.html?room=${roomCode}`; }, 550);
+    }
+
+    // Função de girar a carta
+    window.toggleCardFlip = function() {
+        const flipCard = document.getElementById('flip-card');
+        flipCard.classList.toggle('flipped');
+    }
+
+    // Verificar se sou Host
+    get(roomRef).then(snap => {
+        if(snap.exists()) {
+            const data = snap.val();
+            if(data.host === myId) {
+                isHost = true;
+                document.getElementById('host-start-container').style.display = 'block';
+                document.getElementById('guest-waiting-container').style.display = 'none';
+            }
+        }
+    });
+
+    // Ouvir lista de jogadores no lobby
+    onValue(ref(db, `rooms/${roomCode}/players`), (snap) => {
+        const listEl = document.getElementById('lobby-players-list');
+        listEl.innerHTML = '';
+        if(snap.exists()) {
+            const players = snap.val();
+            Object.keys(players).forEach(pId => {
+                const p = players[pId];
+                if(pId === myId) myName = p.name || "Você";
+                
+                const div = document.createElement('div');
+                div.className = 'player-row';
+                div.innerHTML = `<span><i class="fa-solid fa-user" style="color:#000; margin-right:8px;"></i> ${p.name || 'Anônimo'} ${pId === myId ? '(Você)' : ''}</span>`;
+                listEl.appendChild(div);
+            });
+        }
+    });
+
+    get(roomRef).then(s => {
+        if(s.exists() && s.val().host === myId) {
+            isHost = true;
+            document.getElementById('host-start-container').style.display = 'block';
+            document.getElementById('guest-waiting-container').style.display = 'none';
+        }
+    });
+
+    // Função do Host para iniciar a partida
+    window.startImpostorGame = async function() {
+        if(!isHost) return;
+
+        if(wordPool.length === 0) {
+            await loadWordPool();
+        }
+
+        get(ref(db, `rooms/${roomCode}/players`)).then(snap => {
+            if(!snap.exists()) return;
+            const playersObj = snap.val();
+            const playerIds = Object.keys(playersObj);
+
+            if(playerIds.length < 2) {
+                alert("São necessários pelo menos 2 jogadores para iniciar o Impostor!");
+                return;
+            }
+
+            // Sorteia 1 Impostor
+            const impostorId = playerIds[Math.floor(Math.random() * playerIds.length)];
+            // Sorteia palavra secreta do banco JSON
+            const chosenWordObj = wordPool[Math.floor(Math.random() * wordPool.length)] || { secret: "Exemplo", hint: "Dica padrão" };
+
+            let assignments = {};
+            playerIds.forEach(pId => {
+                assignments[pId] = {
+                    role: pId === impostorId ? 'impostor' : 'innocent',
+                    word: pId === impostorId ? 'VOCÊ É O IMPOSTOR!' : chosenWordObj.secret,
+                    hint: chosenWordObj.hint
+                };
+            });
+
+            set(impostorRef, {
+                status: 'playing',
+                assignments: assignments,
+                impostorId: impostorId,
+                votes: {}
+            });
+        });
+    };
+
+    // Host abre a fase de votação
+    window.goToVotingPhase = function() {
+        if(!isHost) return;
+        update(impostorRef, { status: 'voting' });
+    };
+
+    // Votar em um jogador
+    window.voteForPlayer = function(targetId, targetName) {
+        update(ref(db, `rooms/${roomCode}/impostor/votes`), {
+            [myId]: { targetId: targetId, targetName: targetName, voterName: myName }
+        });
+        
+        // Feedback visual de voto computado
+        document.querySelectorAll('.vote-btn').forEach(btn => {
+            btn.innerHTML = `<i class="fa-solid fa-check"></i> Voto Registrado`;
+            btn.classList.add('voted');
+            btn.disabled = true;
+        });
+    };
+
+    // Ouvir o estado global do jogo do Impostor em tempo real
+    onValue(impostorRef, (snap) => {
+        if(!snap.exists()) return;
+        const data = snap.val();
+
+        const lobbyPanel = document.getElementById('lobby-panel');
+        const gamePanel = document.getElementById('game-panel');
+        const votingPanel = document.getElementById('voting-panel');
+
+        if(data.status === 'playing' || data.status === 'voting') {
+            lobbyPanel.style.display = 'none';
+
+            if(data.assignments && data.assignments[myId]) {
+                const myAssignment = data.assignments[myId];
+                const wordBox = document.getElementById('secret-word-display');
+                const backSubtitle = document.getElementById('back-subtitle');
+
+                if(myAssignment.role === 'impostor') {
+                    wordBox.className = "secret-word-content impostor-alert";
+                    wordBox.innerHTML = `VOCÊ É O IMPOSTOR!<br><span style="font-size: 1rem; display:block; margin-top:10px; font-weight:normal; color:#fff; font-family:var(--font-data);">Dica: ${myAssignment.hint}</span>`;
+                    backSubtitle.innerText = "Seu Papel";
+                } else {
+                    wordBox.className = "secret-word-content";
+                    wordBox.innerHTML = `${myAssignment.word}`;
+                    backSubtitle.innerText = "Palavra Secreta";
+                }
+
+                if(isHost && data.status === 'playing') {
+                    document.getElementById('host-voting-action').style.display = 'block';
+                }
+            }
+
+            if(data.status === 'playing') {
+                gamePanel.style.display = 'flex';
+                votingPanel.style.display = 'none';
+            } else if(data.status === 'voting') {
+                gamePanel.style.display = 'none';
+                votingPanel.style.display = 'block';
+
+                // Renderizar lista de votação com todos os jogadores
+                get(ref(db, `rooms/${roomCode}/players`)).then(pSnap => {
+                    if(pSnap.exists()) {
+                        const players = pSnap.val();
+                        const vList = document.getElementById('voting-players-list');
+                        vList.innerHTML = '';
+                        Object.keys(players).forEach(pId => {
+                            if(pId === myId) return; // Não vota em si mesmo
+                            const p = players[pId];
+                            const btn = document.createElement('button');
+                            btn.className = 'vote-btn';
+                            btn.innerHTML = `<span><i class="fa-solid fa-user-check" style="margin-right:8px;"></i> ${p.name || 'Jogador'}</span> <i class="fa-solid fa-chevron-right"></i>`;
+                            btn.onclick = () => voteForPlayer(pId, p.name || 'Jogador');
+                            vList.appendChild(btn);
+                        });
+                    }
+                });
+
+                checkVotingResults(data);
+            }
+        }
+
+        if(data.status === 'finished') {
+            showResultOverlay(data.winnerTeam, data.impostorName);
+        }
+    });
+
+    function checkVotingResults(data) {
+        if(!isHost) return;
+        get(ref(db, `rooms/${roomCode}/players`)).then(pSnap => {
+            if(!pSnap.exists()) return;
+            const totalPlayers = Object.keys(pSnap.val()).length;
+            const votesObj = data.votes || {};
+            const totalVotes = Object.keys(votesObj).length;
+
+            if(totalVotes >= totalPlayers - 1 && totalPlayers > 1) {
+                let voteCounts = {};
+                Object.values(votesObj).forEach(v => {
+                    voteCounts[v.targetId] = (voteCounts[v.targetId] || 0) + 1;
+                });
+
+                let mostVotedId = null;
+                let maxVotes = -1;
+                Object.keys(voteCounts).forEach(id => {
+                    if(voteCounts[id] > maxVotes) {
+                        maxVotes = voteCounts[id];
+                        mostVotedId = id;
+                    }
+                });
+
+                get(ref(db, `rooms/${roomCode}/players/${data.impostorId}`)).then(impSnap => {
+                    const impostorName = impSnap.exists() ? impSnap.val().name : "O Impostor";
+                    const innocentWon = (mostVotedId === data.impostorId);
+
+                    update(impostorRef, {
+                        status: 'finished',
+                        winnerTeam: innocentWon ? 'Inocentes' : 'Impostor',
+                        impostorName: impostorName
+                    });
+                });
+            }
+        });
+    }
+
+    function showResultOverlay(winnerTeam, impostorName) {
+        const overlay = document.getElementById('result-overlay');
+        const titleEl = document.getElementById('result-title');
+        const descEl = document.getElementById('result-desc');
+
+        if(winnerTeam === 'Inocentes') {
+            titleEl.innerHTML = `<i class="fa-solid fa-trophy"></i> VITÓRIA DOS INOCENTES!`;
+            descEl.innerHTML = `Vocês descobriram o impostor a tempo!<br><br>O impostor era: <b style="color:#ffd600">${impostorName}</b>`;
+        } else {
+            titleEl.innerHTML = `<i class="fa-solid fa-skull"></i> VITÓRIA DO IMPOSTOR!`;
+            descEl.innerHTML = `O impostor enganou todo mundo e passou despercebido!<br><br>O impostor era: <b style="color:#ffd600">${impostorName}</b>`;
+        }
+
+        overlay.classList.add('active');
+        startConfettiAnimation();
+    }
+
+    function startConfettiAnimation() {
+        const overlay = document.getElementById('result-overlay');
+        const colors = ['#ffd600', '#ff2a75', '#00bfff', '#00ff66', '#b19cd9'];
+        for (let i = 0; i < 90; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * 100 + 'vw';
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.transform = `scale(${Math.random() * 1.5 + 0.5})`;
+            confetti.style.animationDuration = Math.random() * 3 + 2 + 's';
+            confetti.style.animationDelay = Math.random() * 2 + 's';
+            overlay.appendChild(confetti);
+        }
+    }
+</script>
+</body>
+</html>
